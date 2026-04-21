@@ -98,21 +98,20 @@ public class Main {
 
                     if (gm.isUsernameTaken(username)){
                         System.out.println("Username sudah digunakan.");
+                    } else{
+                        System.out.print("Masukkan password pengembara: ");
+                        String password = scanner.nextLine();
+                        System.out.print("Masukkan HP maksimal: ");
+                        double maxHp = Double.parseDouble(scanner.nextLine());
+                        System.out.print("Masukkan attack power: ");
+                        double attack = Double.parseDouble(scanner.nextLine());
+                        System.out.print("Masukkan defense: ");
+                        double defense = Double.parseDouble(scanner.nextLine());
+
+                        Wanderer newWanderer = new Wanderer(gm.nextWandererId(), name, username, password, maxHp, attack, defense);
+                        gm.addWanderer(newWanderer);
+                        System.out.println("Pengembara berhasil ditambahkan!");
                     }
-
-                    System.out.print("Masukkan password pengembara: ");
-                    String password = scanner.nextLine();
-                    System.out.print("Masukkan HP maksimal: ");
-                    double maxHp = Double.parseDouble(scanner.nextLine());
-                    System.out.print("Masukkan attack power: ");
-                    double attack = Double.parseDouble(scanner.nextLine());
-                    System.out.print("Masukkan defense: ");
-                    double defense = Double.parseDouble(scanner.nextLine());
-
-                    Wanderer newWanderer = new Wanderer(gm.nextWandererId(), name, username, password, maxHp, attack, defense);
-                    gm.addWanderer(newWanderer);
-                    System.out.println("Pengembara berhasil ditambahkan!");
-
                     break;
             
                 case "5":
