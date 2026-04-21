@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -38,10 +39,8 @@ public class Main {
         User loggedInUser = gm.login(username, password);
 
         if (loggedInUser != null) {
-            // Memanggil metode getWelcomeMessage() secara polimorfik
             System.out.println(loggedInUser.getWelcomeMessage());
 
-            // Penggunaan instanceof DIWAJIBKAN khusus routing
             if (loggedInUser instanceof Admin) {
                 showAdminMenu((Admin) loggedInUser);
             } else if (loggedInUser instanceof Wanderer) {
@@ -56,11 +55,11 @@ public class Main {
         boolean login = true;
 
         while (login){
-            System.out.println("=== Menu Admin (Hari ke-\" + gm.getCurrentDay() + \") ===");
+            System.out.println("\n=== Menu Admin (Hari ke-" + gm.getCurrentDay() + ") ===");
             System.out.println("""
                     1. Lihat daftar quest
                     2. Lihat daftar pengembara
-                    3. Tambah Quest
+                    3. Tambah quest
                     4. Tambah pengembara
                     5. Tambah monster
                     6. Lihat daftar monster
@@ -70,7 +69,7 @@ public class Main {
                     10. Tampilkan daftar pengembara terurut
                     11. Lanjut ke hari berikutnya
                     0. Keluar""");
-            System.out.print("Masukkan pilihan");
+            System.out.print("Masukkan pilihan: ");
             String input = scanner.nextLine();
 
             switch (input) {
@@ -92,10 +91,10 @@ public class Main {
             
                 case "4":
                     System.out.print("Masukkan nama pengembara: ");
-                    String name = scanner.strip().nextLine();
+                    String name = scanner.nextLine().strip();
 
                     System.out.print("Masukkan username pengembara: ");
-                    String username = scanner.strip().nextLine();
+                    String username = scanner.nextLine().strip();
 
                     if (gm.isUsernameTaken(username)){
                         System.out.println("Username sudah digunakan.");
@@ -129,7 +128,22 @@ public class Main {
                     break;
             
                 case "8":
+                    System.out.print("Masukkan level minimum: ");
+                    int min = Integer.parseInt(scanner.nextLine());
+
+                    System.out.print("Masukkan level maksimum: ");
+                    int max = Integer.parseInt(scanner.nextLine());
                     
+                    ArrayList<User> filtered = gm.filterWandererByLevel(min, max);
+                    if(filtered.isEmpty()) {
+                        System.out.println("Tidak ada pengembara pada rentang level tersebut.");
+                    } else {
+                        System.out.println("Hasil pencarian:");
+                        for (User user : filtered) {
+                            System.out.println(user.toString());
+                            System.out.println();
+                        }
+                    }
                     break;
             
                 case "9":
@@ -137,7 +151,33 @@ public class Main {
                     break;
             
                 case "10":
+                    System.out.print("""
+                            Urutkan daftar pengembara
+                            1. Berdasarkan nama
+                            2. Berdasarkan level
+                            Masukkan pilihan: """);
+                    String sort = scanner.nextLine();
                     
+                    System.out.print("Masukkan order urutan (asc/desc), masukkan x untuk kembali ke menu utama: ");
+                    String ascDesc = scanner.nextLine();
+                    boolean isAsc = ascDesc.equals("asc");
+
+                    ArrayList<User> sorted = new ArrayList<>();
+                    if (sort.equals("1")) {
+                        sorted = gm.sortWandererByName(isAsc);
+                    } else if (sort.equals("2")) {
+                        sorted = gm.sortWandererByLevel(isAsc);
+                    }
+                    
+                    if (sorted.isEmpty()) {
+                        System.out.println("Belum ada pengembara yang terdaftar.");
+                    } else {
+                        System.out.println("Daftar pengembara terurut:");
+                        for (User user : sorted) {
+                            System.out.println(user.toString());
+                            System.out.println();
+                        }
+                    }
                     break;
             
                 case "11":
@@ -159,15 +199,15 @@ public class Main {
         boolean login = true;
 
         while (login){
-            System.out.println("=== Menu Admin (Hari ke-\" + gm.getCurrentDay() + \") ===");
+            System.out.println("\n=== Menu Pengembara: " + wanderer.getName() + " (Hari ke-" + gm.getCurrentDay() + ") ===");
             System.out.print("""
                     1. Lihat data diri
-                    2. Lihat daftar quest
+                    2. Lihat daftar quests
                     3. Filter daftar quest
                     4. Tampilkan daftar quest terurut
                     5. Ambil quest
                     0. Keluar
-                    Masukkan pilihan: """;);
+                    Masukkan pilihan:\s""");
             
             String input = scanner.nextLine();
 
