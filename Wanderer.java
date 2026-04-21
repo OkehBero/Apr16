@@ -83,7 +83,7 @@ public class Wanderer extends User implements Combatant {
     @Override
     public String getWelcomeMessage() {
         // TODO
-        return null;
+        return "Login berhasil! Selamat datang, " + getName() + ".";
     }
 
     // Implementasi Combatant

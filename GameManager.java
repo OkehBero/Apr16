@@ -7,24 +7,45 @@ public class GameManager {
     private int currentDay;
 
     public GameManager() {
-        // TODO
+        this.users = new ArrayList<>();
+        this.monsters = new ArrayList<>();
+        this.quests = new ArrayList<>();
+        this.currentDay = 1;
+
+        this.users.add(new Admin("Burhan", "burhan", "burunghantu123")); // hardcode admin
     }
 
     public User login(String username, String password) {
-        // TODO
+        for (User user : users) {
+            if (user.authenticate(username, password)) {
+                return user;
+            }
+        }
         return null;
     }
 
     public void addWanderer(Wanderer wanderer) {
-        // TODO
+        this.users.add(wanderer);
     }
 
     public boolean isUsernameTaken(String username) {
-        // TODO
+        for (User user : users) {
+            if (user.getUsername().equals(username)) {
+                return true;
+            }
+        }
         return false;
     }
 
-    public int nextWandererId() { return 0; }
+    public int nextWandererId() {
+        int count = 1;
+        for (User user : users) {
+            if (user instanceof Wanderer) {
+                count++;
+            }
+        }
+        return count;
+    }
 
     public void addMonster(Monster monster) {
         // TODO
@@ -54,8 +75,14 @@ public class GameManager {
     }
 
     public ArrayList<User> filterWandererByLevel(int min, int max) {
-        // TODO
-        return null;
+        ArrayList<User> filtered = new ArrayList<>();
+        for (User user : getWanderers()) {
+            Wanderer w = (Wanderer) user;
+            if (w.getLevel() >= min && w.getLevel() <= max) {
+                filtered.add(w);
+            }
+        }
+        return filtered;
     }
 
     public ArrayList<Quest> sortQuestByReward(boolean asc) {
@@ -69,13 +96,29 @@ public class GameManager {
     }
 
     public ArrayList<User> sortWandererByName(boolean asc) {
-        // TODO
-        return null;
+        ArrayList<User> sorted = getWanderers();
+        sorted.sort((u1, u2) -> {
+            int cmp = u1.getName().compareToIgnoreCase(u2.getName());
+            return asc ? cmp : -cmp;
+        });
+        return sorted;
     }
 
     public ArrayList<User> sortWandererByLevel(boolean asc) {
-        // TODO
-        return null;
+        ArrayList<User> sorted = getWanderers();
+        sorted.sort((u1, u2) -> {
+            Wanderer w1 = (Wanderer) u1;
+            Wanderer w2 = (Wanderer) u2;
+            int cmp = Integer.compare(w1.getLevel(), w2.getLevel());
+            
+            // Jika levelnya sama, urutkan berdasarkan nama
+            if (cmp == 0) {
+                int nameCmp = w1.getName().compareToIgnoreCase(w2.getName());
+                return asc ? nameCmp : -nameCmp;
+            }
+            return asc ? cmp : -cmp;
+        });
+        return sorted;
     }
 
     public void advanceDay() {
@@ -83,9 +126,20 @@ public class GameManager {
         // TODO: reset HP semua wanderer ke maxHp
     }
 
-    public int getCurrentDay() { return 0; }
-    public ArrayList<User> getWanderers() { return null; }
+    public int getCurrentDay() { return this.currentDay; }
+
+    public ArrayList<User> getWanderers() {
+        ArrayList<User> wanderers = new ArrayList<>();
+        for (User user : users) {
+            if (user instanceof Wanderer) {
+                wanderers.add(user);
+            }
+        }
+        return wanderers; 
+    }
+
     public ArrayList<Monster> getMonsters() { return null; }
+
     public ArrayList<Quest> getQuests() { return null; }
 }
 
