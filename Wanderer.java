@@ -18,7 +18,7 @@ public class Wanderer extends User implements Combatant {
     public Wanderer(int idNumber, String name, String username,
                     String password, double maxHp, double attack, double defense) {
         super(name, username, password);
-        // TODO
+
         this.id = "P" + idNumber;
         this.maxHp = maxHp;
         this.attack = attack;
@@ -31,25 +31,37 @@ public class Wanderer extends User implements Combatant {
     }
 
     public boolean canTakeQuest(Difficulty difficulty) {
-        // TODO
-        return false;
+        if (difficulty == Difficulty.MENENGAH) return this.level >= 6;
+        if (difficulty == Difficulty.SULIT) return this.level >= 16;
+        return true;
     }
 
     public void addExp(int amount) {
-        // TODO
+        this.exp += amount;
+        if (this.exp > 1310720000){
+            this.exp = 1310720000;
+        }
     }
 
     public void addCoins(int amount) {
-        // TODO
+        this.coins += amount;
     }
 
     public int getNextLevelExp(int currentLevel) {
-        // TODO: rekursif
-        return 0;
+        if (currentLevel == 1){
+            return 5000;
+        }
+        return 2 * getNextLevelExp(currentLevel -1);
     }
 
     public void setCurrentHp(double hp) {
-        // TODO
+        this.currentHp = hp;
+        
+        if (this.currentHp > this.maxHp) {
+            this.currentHp = this.maxHp;
+        } else if (this.currentHp < 0) {
+            this.currentHp = 0;
+        }
     }
 
     public double getCurrentHp() {
@@ -82,7 +94,6 @@ public class Wanderer extends User implements Combatant {
 
     @Override
     public String getWelcomeMessage() {
-        // TODO
         return "Login berhasil! Selamat datang, " + getName() + ".";
     }
 
@@ -131,7 +142,6 @@ public class Wanderer extends User implements Combatant {
 
     @Override
     public String toString() {
-        // TODO
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
         DecimalFormat df = new DecimalFormat("#.##", symbols);
         String output = """
