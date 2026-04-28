@@ -37,6 +37,15 @@ public class GameManager {
         return false;
     }
 
+    public boolean isMosterNameTaken(String name){
+        for (Monster monster : monsters){
+            if (monster.getName().equals(name)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public int nextWandererId() {
         int count = 1;
         for (User user : users) {
@@ -48,19 +57,51 @@ public class GameManager {
     }
 
     public void addMonster(Monster monster) {
-        // TODO
+        this.monsters.add(monster);
     }
 
-    public int nextMonsterId() { return 0; }
+    public int nextMonsterId() {
+        int count = 1;
+        for (Monster monster : monsters) {
+            if (monster instanceof Monster) {
+                count++;
+            }
+        }
+        return count;
+    }
 
     public void addQuest(Quest quest) {
-        // TODO
+        this.quests.add(quest);
     }
 
-    public int nextQuestId() { return 0; }
+    public void addQuest(int questType, String name, String description, Difficulty difficulty, Monster monster, int minLevel, int bonusExp, int bonusCoin){
+        int questId = nextQuestId();
+
+        if (questType == 1){
+            addQuest(new RegularQuest(questId, name, description, difficulty, monster, minLevel));
+        } else if (questType == 2){
+            addQuest(new DailyQuest(questId, name, description, difficulty, monster, minLevel));
+        } else if (questType == 3){
+            addQuest(new BountyQuest(questId, name, description, difficulty, monster, minLevel, bonusExp, bonusCoin));
+        }
+    }
+
+    public int nextQuestId() {
+        int count = 1;
+        for (Quest quest : quests) {
+            if (quest instanceof Quest) {
+                count++;
+            }
+        }
+        return count;
+    }
 
     public Quest findQuestById(String id) {
-        // TODO
+        for (Quest quest : this.quests){
+            if (quest.getId().equalsIgnoreCase(id.strip())){
+                return quest;
+            }
+        }
         return null;
     }
 
@@ -70,8 +111,13 @@ public class GameManager {
     }
 
     public ArrayList<Quest> filterQuestByDifficulty(Difficulty difficulty) {
-        // TODO
-        return null;
+        ArrayList<Quest> filtered = new ArrayList<>();
+        for (Quest q : this.quests) {
+            if (q.getDifficulty() == difficulty) {
+                filtered.add(q);
+            }
+        }
+        return filtered;
     }
 
     public ArrayList<User> filterWandererByLevel(int min, int max) {
@@ -86,13 +132,31 @@ public class GameManager {
     }
 
     public ArrayList<Quest> sortQuestByReward(boolean asc) {
-        // TODO
-        return null;
+        ArrayList<Quest> sorted = new ArrayList<>(this.quests);
+        sorted.sort((quest1, quest2) -> {
+            int compare = Integer.compare(quest1.getExpReward(), quest2.getExpReward());
+            if (compare == 0) {
+                // Jika reward sama, urutkan berdasarkan nama
+                int nameCompare = quest1.getName().compareToIgnoreCase(quest2.getName());
+                return asc ? nameCompare : -nameCompare;
+            }
+            return asc ? compare : -compare;
+        });
+        return sorted;
     }
 
     public ArrayList<Quest> sortQuestByDifficulty(boolean asc) {
-        // TODO
-        return null;
+        ArrayList<Quest> sorted = new ArrayList<>(this.quests);
+        sorted.sort((quest1, quest2) -> {
+            // Urutkan berdasarkan level minimum tingkat kesulitan
+            int compare = Integer.compare(quest1.getDifficulty().getMinWandererLevel(), quest2.getDifficulty().getMinWandererLevel());
+            if (compare == 0) {
+                int nameCompare = quest1.getName().compareToIgnoreCase(quest2.getName());
+                return asc ? nameCompare : -nameCompare;
+            }
+            return asc ? compare : -compare;
+        });
+        return sorted;
     }
 
     public ArrayList<User> sortWandererByName(boolean asc) {
@@ -122,8 +186,18 @@ public class GameManager {
     }
 
     public void advanceDay() {
-        // TODO: currentDay++
-        // TODO: reset HP semua wanderer ke maxHp
+        this.currentDay++;
+
+        for (User user : getWanderers()){
+            Wanderer wanderer = (Wanderer) user;
+            wanderer.setCurrentHp(wanderer.getMaxHp());
+        }
+
+        for (Quest quest: quests){
+            if (quest instanceof DailyQuest){
+                ((DailyQuest) quest).reset();
+            }
+        }
     }
 
     public int getCurrentDay() { return this.currentDay; }
@@ -138,8 +212,12 @@ public class GameManager {
         return wanderers; 
     }
 
-    public ArrayList<Monster> getMonsters() { return null; }
+    public ArrayList<Monster> getMonsters() {
+        return this.monsters;
+    }
 
-    public ArrayList<Quest> getQuests() { return null; }
+    public ArrayList<Quest> getQuests() {
+        return this.quests;
+    }
 }
 

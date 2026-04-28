@@ -41,6 +41,20 @@ public class Wanderer extends User implements Combatant {
         if (this.exp > 1310720000){
             this.exp = 1310720000;
         }
+
+        while (this.exp >= this.level * 100) {
+            this.exp -= this.level * 100;
+            
+            this.level++;
+            
+            this.maxHp += 10.0;
+            this.attack += 2.0;
+            this.defense += 2.0;
+            
+            this.currentHp = this.maxHp;
+            
+            System.out.println("Selamat! " + getName() + " naik ke Level " + this.level + "!");
+        }
     }
 
     public void addCoins(int amount) {
@@ -68,19 +82,22 @@ public class Wanderer extends User implements Combatant {
         return this.currentHp;
 
     }
+
+    public double getMaxHp(){
+        return this.maxHp;
+    }
     
     void setBattleContext(Monster target, double multiplier) {
-        // TODO
+        this.currentTarget = target;
+        this.currentMultiplier = multiplier;
     }
 
     Monster getCurrentTarget() {
-        // TODO
-        return null;
+        return this.currentTarget;
     }
 
     double getCurrentMultiplier() {
-        // TODO
-        return 0;
+        return this.currentMultiplier;
     }
 
     void setCustomDamageNote(String customDamageNote) {
@@ -109,7 +126,10 @@ public class Wanderer extends User implements Combatant {
 
     @Override
     public void takeDamage(double damage) {
-        // TODO
+        this.currentHp -= damage;
+        if (this.currentHp < 0){
+            this.currentHp = 0;
+        }
     }
 
     // Implementasi mekanisme pertempuran
@@ -117,28 +137,32 @@ public class Wanderer extends User implements Combatant {
     }
 
     public double modifyDamageDealt(double baseDamage) {
-        // TODO
-        return 0;
+        return baseDamage;
     }
 
     public double modifyDamageTaken(double incomingDamage) {
-        // TODO
-        return 0;
+        return incomingDamage;
     }
 
     public void onTurnEnd(double result) {
     }
 
     public void resetBattleState() {
-        // TODO
+        this.currentTarget = null;
+        this.currentMultiplier = 0;
+        this.customDamageNote = null;
     }
 
 
     @Override
-    public boolean isDefeated() { return false; }
+    public boolean isDefeated() {
+        return this.currentHp <= 0;
+    }
 
     @Override
-    public String getCombatInfo() { return null; }
+    public String getCombatInfo() {
+        return String.format("%s | HP: %.2f/%.2f | ATK: %.2f | DEF: %.2f", this.getName(), this.currentHp, this.maxHp, this.getAttackPower(), this.getDefense());
+    }
 
     @Override
     public String toString() {

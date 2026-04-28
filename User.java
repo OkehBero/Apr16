@@ -4,7 +4,6 @@ public abstract class User {
     private String password;
 
     public User(String name, String username, String password) {
-        // TODO
         this.name = name;
         this.username = username;
         this.password = password;
@@ -13,7 +12,6 @@ public abstract class User {
     public abstract String getWelcomeMessage();
 
     public boolean authenticate(String username, String password) {
-        // TODO
         return this.username.equals(username) && this.password.equals(password);
     }
 
@@ -22,13 +20,11 @@ public abstract class User {
     }
 
     public String getUsername() {
-        // TODO
         return this.username;
     }
 
     @Override
     public String toString() {
-        // TODO
         return this.name;
     }
 }

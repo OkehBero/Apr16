@@ -6,7 +6,9 @@ public class BountyQuest extends Quest implements Rewardable {
                        Difficulty difficulty, Monster monster,
                        int minLevel, int bonusExp, int bonusCoin) {
         super(idNumber, name, description, difficulty, monster, minLevel);
-        // TODO
+        
+        this.bonusExp = bonusExp;
+        this.bonusCoin = bonusCoin;
     }
 
     @Override
@@ -15,14 +17,19 @@ public class BountyQuest extends Quest implements Rewardable {
     }
 
     @Override
-    public int getBonusExp() { return 0; }
+    public int getBonusExp() { return this.bonusExp; }
 
     @Override
-    public int getBonusCoin() { return 0; }
+    public int getBonusCoin() { return this.bonusCoin; }
 
-    @Override
+@Override
     public String toString() {
-        // TODO
-        return null;
+        return super.toString() + "\n" + String.format("""
+                Bonus Koin: %d
+                Bonus Exp: %d
+                Status: %s""",
+                this.getBonusCoin(),
+                this.getBonusExp(),
+                getStatus().getDisplayName());
     }
 }

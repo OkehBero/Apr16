@@ -10,46 +10,71 @@ public abstract class Quest implements Completable {
 
     public Quest(int idNumber, String name, String description,
                  Difficulty difficulty, Monster monster, int minLevel) {
-        // TODO
+
+        this.id = "Q" + idNumber;
+        this.name = name;
+        this.description = description;
+        this.difficulty = difficulty;
+        this.monster = monster;
+        this.minLevel = minLevel;
+        this.status = QuestStatus.TERSEDIA;
     }
 
     public abstract String getQuestType();
 
     public int getExpReward() {
-        // TODO
-        return 0;
+        return this.monster.getExpReward() + getBonusExp();
     }
 
     public int getCoinReward() {
-        // TODO
-        return 0;
+        return this.monster.getCoinReward() + getBonusCoin();
     }
 
     protected int getBonusExp() { return 0; }
     protected int getBonusCoin() { return 0; }
 
     @Override
-    public boolean isCompletable() { return false; }
+    public boolean isCompletable() {
+        return this.status == QuestStatus.TERSEDIA;
+    }
 
     @Override
     public void complete() {
-        // TODO
+        this.status = QuestStatus.SELESAI;
     }
 
     public void resetToAvailable() {
-        // TODO
+        this.status = QuestStatus.TERSEDIA;
     }
 
-    public String getId() { return null; }
-    public String getName() { return null; }
-    public Difficulty getDifficulty() { return null; }
-    public Monster getMonster() { return null; }
-    public int getMinLevel() { return 0; }
-    public QuestStatus getStatus() { return null; }
+    public String getId() { return this.id; }
+    public String getName() { return this.name; }
+    public Difficulty getDifficulty() { return this.difficulty; }
+    public Monster getMonster() { return this.monster; }
+    public int getMinLevel() { return this.minLevel; }
+    public QuestStatus getStatus() { return this.status; }
 
     @Override
     public String toString() {
-        // TODO
-        return null;
+        return String.format("""
+                ID Quest: %s
+                Nama Quest: %s
+                Tipe Quest: %s
+                Deskripsi Quest: %s
+                Tingkat Kesulitan: %s
+                Monster: %s
+                Level Minimum: %d
+                Reward Koin: %d
+                Reward Exp: %d
+                """,
+                this.getId(),
+                this.getName(),
+                this.getQuestType(),
+                this.description,
+                this.getDifficulty().getDisplayName(),
+                this.getMonster().getName(),
+                this.getMinLevel(),
+                this.getMonster().getCoinReward(),
+                this.getMonster().getExpReward());
     }
 }

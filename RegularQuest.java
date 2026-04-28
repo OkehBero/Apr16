@@ -12,7 +12,6 @@ public class RegularQuest extends Quest {
 
     @Override
     public String toString() {
-        // TODO
-        return null;
+        return super.toString() + "\nStatus: " + getStatus().getDisplayName();
     }
 }

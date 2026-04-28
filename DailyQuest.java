@@ -4,7 +4,8 @@ public class DailyQuest extends Quest implements Repeatable {
     public DailyQuest(int idNumber, String name, String description,
                       Difficulty difficulty, Monster monster, int minLevel) {
         super(idNumber, name, description, difficulty, monster, minLevel);
-        // TODO
+        
+        this.timesCompleted = 0;
     }
 
     @Override
@@ -14,26 +15,29 @@ public class DailyQuest extends Quest implements Repeatable {
 
     @Override
     public void complete() {
-        // TODO: timesCompleted++ lalu reset()
+        this.timesCompleted++;
     }
 
     @Override
     public void reset() {
-        // TODO
+        this.timesCompleted = 0;
     }
 
     @Override
-    public int getTimesCompleted() { return 0; }
+    public int getTimesCompleted() { return this.timesCompleted; }
 
     @Override
     protected int getBonusExp() {
-        // TODO
         return 0;
     }
 
     @Override
     public String toString() {
-        // TODO
-        return null;
+        return super.toString() + String.format("""
+                Status: %s
+                Sudah Diselesaikan: %d kali
+                """, 
+                getStatus().getDisplayName(),
+                this.timesCompleted);
     }
 }
