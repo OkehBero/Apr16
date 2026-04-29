@@ -30,6 +30,11 @@ public class Wanderer extends User implements Combatant {
         this.currentHp = maxHp;
     }
 
+
+    public String getPassiveTriggerSummary(){
+        return "";
+    }
+
     public boolean canTakeQuest(Difficulty difficulty) {
         if (difficulty == Difficulty.MENENGAH) return this.level >= 6;
         if (difficulty == Difficulty.SULIT) return this.level >= 16;

@@ -24,7 +24,18 @@ public class GameManager {
         return null;
     }
 
-    public void addWanderer(Wanderer wanderer) {
+    public void addWanderer(int idNumber, String name, String username,
+                    String password, double maxHp, double attack, double defense, String jobClass) {
+        Wanderer wanderer = switch (jobClass) {
+            case "2" -> new Tank(nextWandererId(), name, username, password, maxHp, attack, defense);
+            case "3" -> new Mage(nextWandererId(), name, username, password, maxHp, attack, defense);
+            case "4" -> new Assassin(nextWandererId(), name, username, password, maxHp, attack, defense);
+            case "5" -> new Fighter(nextWandererId(), name, username, password, maxHp, attack, defense);
+            case "6" -> new Support(nextWandererId(), name, username, password, maxHp, attack, defense);
+
+        
+            default -> new Wanderer(nextWandererId(), name, username, password, maxHp, attack, defense);
+        };
         this.users.add(wanderer);
     }
 

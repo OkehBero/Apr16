@@ -8,8 +8,9 @@ public class Monster implements Combatant {
     private int expReward;
     private int coinReward;
     private boolean bleeding;
-    private int bleedDamage;
+    private double bleedDamage;
     private String bleedSourceName;
+    private int bleedCount;
 
     public Monster(int idNumber, String name, double  maxHp,
                    double  attackPower, double  defense,
@@ -30,28 +31,33 @@ public class Monster implements Combatant {
     public int getCoinReward() { return this.coinReward; }
     public double getMaxHp() { return this.maxHp; }
     public double getCurrentHp() {return this.currentHp;}
+    public int getBleedCount() {return this.bleedCount;}
 
     public void resetHp() {
         this.currentHp = this.maxHp;
     }
 
-    void applyBleed(String sourceName, int bleedDamage) {
+    void applyBleed(String sourceName, double bleedDamage) {
         this.bleeding = true;
         this.bleedSourceName = sourceName;
         this.bleedDamage = bleedDamage;
+
     }
 
     public void onTurnStart() {
         if (this.bleeding){
             takeDamage(bleedDamage);
-            System.out.println(String.format("%s terkena efek bleed dari %s sebesar %d damage!", this.name, this.bleedSourceName, this.bleedDamage));
+            this.bleedCount++;
+            System.out.println(String.format("[ASSASSIN] %s menerima %.2f damage dari Bleed!", this.name, this.bleedDamage));
+            this.bleeding = false;
         }
     }
 
     public void resetBattleState() {
         this.bleeding = false;
-        this.bleedDamage = 0;
+        this.bleedDamage = 0.0;
         this.bleedSourceName = null;
+        this.bleedCount = 0;
     }
 
     // Implementasi Combatant

@@ -1,11 +1,14 @@
 public class Mage extends Wanderer {
     private boolean overcharged;
     private boolean usedBurstThisTurn;
+    private int overchargedCount = 0;
+    private int burstCount = 0;
 
     public Mage(int idNumber, String name, String username,
                 String password, double  maxHp, double  attack, double  defense) {
         super(idNumber, name, username, password, maxHp, attack, defense);
-        // TODO
+        this.overcharged = false;
+        this.usedBurstThisTurn = false;
     }
 
     @Override
@@ -15,17 +18,39 @@ public class Mage extends Wanderer {
 
     @Override
     public double modifyDamageDealt(double baseDamage) {
-        // TODO
-        return 0;
+        if (this.overcharged) {
+            this.burstCount++;
+            System.out.println("[MAGE] Arcane Burst Aktif!");
+            this.overcharged = false;
+            this.usedBurstThisTurn = true;
+            return getAttackPower() * 2.0;
+        }
+        this.usedBurstThisTurn = false;
+        return baseDamage;
     }
 
     @Override
     public void onTurnEnd(double result) {
-        // TODO
+        if (!this.overcharged && !this.usedBurstThisTurn){
+            this.overcharged = true;
+            this.overchargedCount++;
+            System.out.println("[MAGE] Mana terkumpul! Overcharged untuk serangna berikutnya.");
+        }
     }
 
     @Override
     public void resetBattleState() {
-        // TODO
+        super.resetBattleState();;
+        this.overcharged = false;
+        this.usedBurstThisTurn = false;
+        this.overchargedCount = 0;
+        this.burstCount = 0;
+    }
+
+    @Override
+    public String getPassiveTriggerSummary(){
+        return String.format("""
+                - Overcharged terkumpul: %d kali
+                - Arcane Burst aktif: %d kali""", overchargedCount, burstCount);
     }
 }

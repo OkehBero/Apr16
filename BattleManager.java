@@ -14,6 +14,8 @@ public class BattleManager {
         wanderer.resetBattleState();
         monster.resetBattleState();
 
+        
+
         // TODO: tampilkan info kedua pihak
         System.out.println("=== Battle Dimulai ===");
         System.out.println(wanderer.getCombatInfo() + " vs " + monster.getCombatInfo());
@@ -21,6 +23,8 @@ public class BattleManager {
 
         double atkMult = 0;
         double defMult = 0;
+
+        wanderer.setBattleContext(monster, atkMult);
 
         if (quest.getDifficulty() == Difficulty.MUDAH){
             atkMult = 1.25;
@@ -80,7 +84,7 @@ public class BattleManager {
             }
 
             System.out.println("Tekan Enter untuk melnajutkan...");
-            scanner.nextLine();
+            scanner.nextLine().strip();
             turn += 1;
         }
 
@@ -119,6 +123,12 @@ public class BattleManager {
                 turn,
                 wanderer.getName(), totalDamageDealt,
                 wanderer.getName(), totalDamageTaken));
+        
+        String passiveTriggerSummary = wanderer.getPassiveTriggerSummary();
+        if (!passiveTriggerSummary.isEmpty()){
+            System.out.println("Passive TriggerSummary:");
+            System.out.println(passiveTriggerSummary);
+        }
 
         System.out.println("Hasil Akhir: " + (monster.isDefeated() ? "Menang" : "Kalah"));
     }

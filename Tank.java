@@ -1,4 +1,5 @@
 public class Tank extends Wanderer {
+    private int shieldCount = 0;
     public Tank(int idNumber, String name, String username,
                 String password, double  maxHp, double  attack, double  defense) {
         super(idNumber, name, username, password, maxHp, attack, defense);
@@ -6,7 +7,16 @@ public class Tank extends Wanderer {
 
     @Override
     public double modifyDamageTaken(double incomingDamage) {
-        // TODO
-        return 0;
+        if (getCurrentHp() <= 0.3 * getMaxHp()){
+            this.shieldCount++;
+            System.out.println("[TANK] Shield menyala! Damage terpotong 50%");
+            return incomingDamage * 0.5;
+        }
+        return incomingDamage;
+    }
+
+    @Override
+    public String getPassiveTriggerSummary(){
+        return String.format("- Shield aktif: %d kali", shieldCount);
     }
 }

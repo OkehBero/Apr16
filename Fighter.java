@@ -1,25 +1,72 @@
 public class Fighter extends Wanderer {
     private int furyStacks;
+    private int stackICount = 0;
+    private int stackIICount = 0;
+    private int stackIIICount = 0;
+    private int resetStackCount = 0;
 
     public Fighter(int idNumber, String name, String username,
                    String password, double  maxHp, double attack, double defense) {
         super(idNumber, name, username, password, maxHp, attack, defense);
-        // TODO
+        this.furyStacks = 0;
     }
 
     @Override
     public double modifyDamageDealt(double baseDamage) {
-        // TODO
-        return 0;
+        if (this.furyStacks > 0){
+
+            String stacks;
+            
+            if (this.furyStacks == 1){
+                this.stackICount++;
+                stacks = "I";
+            } else if (this.furyStacks == 2){
+                this.stackIICount++;
+                stacks = "II";
+            } else {
+                this.stackIIICount++;
+                stacks = "III";
+            }
+
+            int persenan = this.furyStacks * 10;
+            System.out.println("[FIGHTER] Fury Stacks (" + stacks + ") aktif, Damage bertambah sebesar " + persenan + "% ATK!");
+            return baseDamage + (getAttackPower() * persenan / 100.0);
+        }
+        return baseDamage;
     }
 
     @Override
     public void onTurnEnd(double result) {
-        // TODO
+        if (this.furyStacks == 3){
+            this.furyStacks = 0;
+            this.resetStackCount++;
+            System.out.println("[FIGHTER] Stacks full, reset ke 0!");
+        } else {
+            this.furyStacks++;
+            System.out.println("[FIGHTER] Stacks bertambah!");
+        }
     }
 
     @Override
     public void resetBattleState() {
-        // TODO
+        super.resetBattleState();
+        this.furyStacks = 0;
+        this.stackICount = 0;
+        this.stackIICount = 0;
+        this.stackIIICount = 0;
+        this.resetStackCount = 0;
+    }
+
+    @Override
+    public String getPassiveTriggerSummary(){
+        return String.format("""
+                - Fury Stacks I aktif: %d kali
+                - Fury Stacks II aktif: %d kali
+                - Fury Stacks III aktif: %d kali
+                - Reset Fury Stack: %d kali""",
+                stackICount,
+                stackIICount,
+                stackIIICount,
+                resetStackCount);
     }
 }

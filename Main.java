@@ -172,8 +172,19 @@ public class Main {
                         System.out.print("Masukkan defense: ");
                         double defense = Double.parseDouble(scanner.nextLine().strip());
 
-                        Wanderer newWanderer = new Wanderer(gm.nextWandererId(), name, username, password, maxHp, attack, defense);
-                        gm.addWanderer(newWanderer);
+                        System.out.println("");
+                        System.out.print("""
+                                Pilih Job Class:
+                                1. Novice (Tanpa Skill)
+                                2. Tank
+                                3. Mage
+                                4. Assassin
+                                5. Fighter
+                                6. Support
+                                Pilihan: """);
+                        String jobClass = scanner.nextLine().strip();
+
+                        gm.addWanderer(gm.nextWandererId(), name, username, password, maxHp, attack, defense, jobClass);
                         System.out.println("Pengembara berhasil ditambahkan!");
                     }
                     break;
