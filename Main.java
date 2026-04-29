@@ -15,7 +15,8 @@ public class Main {
         // TODO: loop menu login
         System.out.println("\nSelamat datang di BurhanQuest!");
 
-        while (true) {
+        boolean menuLogin = true;
+        while (menuLogin) {
             System.out.println("\n=== Hari ke-" + gm.getCurrentDay() + " ===");
             System.out.println("1. Login");
             System.out.println("0. Keluar dari program");
@@ -25,7 +26,7 @@ public class Main {
             if (input.strip().equals("1")) {
                 showLoginMenu();
             } else if (input.strip().equals("0")) {
-                break;
+                menuLogin = false;
             }
         }
     }
@@ -73,7 +74,7 @@ public class Main {
             String input = scanner.nextLine();
 
             switch (input) {
-                case "1":
+                case "1" -> {
                     System.out.println("\n=== Daftar Quest ===");
                     if (gm.getQuests().isEmpty()) {
                         System.out.println("Belum ada quest yang terdaftar.");
@@ -82,17 +83,18 @@ public class Main {
                             System.out.println(q.toString() + "\n");
                         }
                     }
-                    break;
+                }
+                        
             
-                case "2":
+                case "2" -> {
                     System.out.println("Pengembara yang terdaftar:");
                     for (User wanderer : gm.getWanderers()){
                         System.out.println(wanderer);
                         System.out.println("");
                     }
-                    break;
+                }
             
-                case "3":
+                case "3" ->{
                     if (gm.getMonsters().isEmpty()){
                         System.out.println("Monster belum ada. Tambahkan monster terlebih dahulu.");
                         break;
@@ -151,9 +153,9 @@ public class Main {
 
 
                     System.out.println("Quest berhasil ditambahkan!");
-                    break;
+                }
             
-                case "4":
+                case "4" -> {
                     System.out.print("Masukkan nama pengembara: ");
                     String name = scanner.nextLine().strip();
 
@@ -187,9 +189,9 @@ public class Main {
                         gm.addWanderer(gm.nextWandererId(), name, username, password, maxHp, attack, defense, jobClass);
                         System.out.println("Pengembara berhasil ditambahkan!");
                     }
-                    break;
+                }
             
-                case "5":
+                case "5" -> {
                     System.out.print("Mauskkan nama monster: ");
                     String monsterName = scanner.nextLine().strip();
 
@@ -215,9 +217,9 @@ public class Main {
                         gm.addMonster(newMonster);
                         
                     }
-                    break;
+                }
             
-                case "6":
+                case "6" -> {
                     System.out.println();
                     System.out.println("=== Daftar Monster ===");
 
@@ -230,9 +232,9 @@ public class Main {
                             System.out.println(monster.toString());
                         }
                     }
-                    break;
+                }
             
-                case "7":
+                case "7" -> {
                     System.out.print("Masukkan tingkat kesulitan (mudah/menengah/sulit): ");
                     String diffInputFilter = scanner.nextLine().strip();
                     Difficulty diffFilter = Difficulty.fromString(diffInputFilter);
@@ -252,9 +254,9 @@ public class Main {
                             }
                         }
                     }
-                    break;
+                }
             
-                case "8":
+                case "8" -> {
                     System.out.print("Masukkan level minimum: ");
                     int min = Integer.parseInt(scanner.nextLine());
 
@@ -271,9 +273,9 @@ public class Main {
                             System.out.println();
                         }
                     }
-                    break;
+                }
             
-                case "9":
+                case "9" -> {
                     System.out.print("""
                             Urutkan daftar quest
                             1. Berdasarkan tingkat kesulitan
@@ -306,9 +308,9 @@ public class Main {
                             System.out.println(quest.toString());
                         }
                     }
-                    break;
+                }
             
-                case "10":
+                case "10" -> {
                     System.out.print("""
                             Urutkan daftar pengembara
                             1. Berdasarkan nama
@@ -336,20 +338,20 @@ public class Main {
                             System.out.println();
                         }
                     }
-                    break;
+                }
             
-                case "11":
+                case "11" -> {
                     gm.advanceDay();
                     System.out.println(String.format("Hari berganti menjadi hari ke-%d", gm.getCurrentDay()));
-                    break;
+                }
             
-                case "0":
+                case "0" -> {
                     System.out.println("Logout berhasil.");
                     login = false;
-                    break;
+                }
             
-                default:
-                    break;
+                default -> {System.out.println("Masukkan pilihan yang valid!");}
+                    
             }
         }
     }
@@ -371,12 +373,12 @@ public class Main {
             String input = scanner.nextLine();
 
             switch (input) {
-                case "1":
+                case "1" -> {
                     System.out.println("\n=== Data Diri ===");
                     System.out.println(wanderer.toString());
-                    break;
+                }
                 
-                case "2":
+                case "2" -> {
                     System.out.println("\n=== Daftar Quest ===");
                     if (gm.getQuests().isEmpty()) {
                         System.out.println("Belum ada quest yang terdaftar.");
@@ -385,9 +387,9 @@ public class Main {
                             System.out.println(q.toString() + "\n");
                         }
                     }
-                    break;
+                }
             
-                case "3":
+                case "3" -> {
                     System.out.print("Masukkan tingkat kesulitan (mudah/menengah/sulit): ");
                     String diffInputFilter = scanner.nextLine().strip();
                     Difficulty diffFilter = Difficulty.fromString(diffInputFilter);
@@ -407,9 +409,9 @@ public class Main {
                             }
                         }
                     }
-                    break;
+                }
             
-                case "4":
+                case "4" -> {
                     System.out.print("""
                             Urutkan daftar quest
                             1. Berdasarkan tingkat kesulitan
@@ -442,9 +444,9 @@ public class Main {
                             System.out.println(quest.toString());
                         }
                     }
-                    break;
+                }
             
-                case "5":
+                case "5" -> {
                     ArrayList<Quest> questList = gm.getQuests();
 
                     System.out.println("Masukkan ID Quest yang ingin diambil (atau 'X'/'x' untuk kembali: ");
@@ -461,16 +463,15 @@ public class Main {
                     // TODO validasi level minimum pengembara
 
                     BattleManager.simulateBattle(wanderer, questTerpilih);
-                    break;
+                }
             
-                case "0":
+                case "0" -> {
                     System.out.println("Logout berhasil.");
                     login = false;
-                    break;
+                }
             
-                default:
-                    break;
+                default -> {System.out.println("Masukkan pilihan yang valid");
             }
         }
     }
-}
+    }}
