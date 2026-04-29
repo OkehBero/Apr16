@@ -79,13 +79,13 @@ public class BattleManager {
                 System.out.println(String.format("%s HP: %.2f/%.2f", wanderer.getName(), wanderer.getCurrentHp(), wanderer.getMaxHp()));
             }
 
-            if (wanderer.isDefeated() || monster.isDefeated()){
-                break;
-            }
 
-            System.out.println("Tekan Enter untuk melnajutkan...");
-            scanner.nextLine().strip();
-            turn += 1;
+            if (!wanderer.isDefeated() && !monster.isDefeated()){
+                System.out.println("Tekan Enter untuk melnajutkan...");
+                scanner.nextLine().strip();
+                turn += 1;
+            }
+            
         }
 
         // TODO: handle hasil battle
