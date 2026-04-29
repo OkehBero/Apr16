@@ -11,6 +11,7 @@ public class Monster implements Combatant {
     private double bleedDamage;
     private String bleedSourceName;
     private int bleedCount;
+    private String customDamageNote;
 
     public Monster(int idNumber, String name, double  maxHp,
                    double  attackPower, double  defense,
@@ -44,11 +45,21 @@ public class Monster implements Combatant {
 
     }
 
+    void setCustomDamageNote(String note){
+        this.customDamageNote = note;
+    }
+
+    public String consumeCustomDamageNote(){
+        String x = this.customDamageNote;
+        this.customDamageNote = null;
+        return x;
+    }
+
     public void onTurnStart() {
         if (this.bleeding){
             takeDamage(bleedDamage);
             this.bleedCount++;
-            System.out.println(String.format("[ASSASSIN] %s menerima %.2f damage dari Bleed!", this.name, this.bleedDamage));
+            setCustomDamageNote(String.format("[ASSASSIN] %s menerima %.2f damage dari Bleed!", this.name, this.bleedDamage));
             this.bleeding = false;
         }
     }
@@ -58,6 +69,7 @@ public class Monster implements Combatant {
         this.bleedDamage = 0.0;
         this.bleedSourceName = null;
         this.bleedCount = 0;
+        this.customDamageNote = null;
     }
 
     // Implementasi Combatant

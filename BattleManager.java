@@ -45,15 +45,20 @@ public class BattleManager {
 
         while (!wanderer.isDefeated() && !monster.isDefeated()){
             System.out.println(String.format("--- Turn %d ---", turn));
+            String note;
 
             if (turn % 2 != 0){
                 wanderer.onTurnStart();
+                note = wanderer.consumeCustomDamageNote();
+                if (note != null) System.out.println(note);
 
                 System.out.println(String.format("%s menyerang %s!", wanderer.getName(), monster.getName()));
 
                 double baseDamage = Math.max(1.0, wanderer.getAttackPower() - monster.getDefense()) * atkMult;
 
                 double finalDamage = wanderer.modifyDamageDealt(baseDamage);
+                note = wanderer.consumeCustomDamageNote();
+                if (note != null) System.out.println(note);
 
                 System.out.println(String.format("Damage ke %s: %.2f", monster.getName(), finalDamage));
                 monster.takeDamage(finalDamage);
@@ -62,15 +67,26 @@ public class BattleManager {
                 System.out.println(String.format("%s HP: %.2f/%.2f", monster.getName(), monster.getCurrentHp(), monster.getMaxHp()));
 
                 wanderer.onTurnEnd(finalDamage);
+                note = wanderer.consumeCustomDamageNote();
+                if (note != null) System.out.println(note);
 
             } else {
                 monster.onTurnStart();
+
+                note = monster.consumeCustomDamageNote();
+                if (note != null){
+                    System.out.println(note);
+                }
 
                 System.out.println(String.format("%s menyerang %s!", monster.getName(), wanderer.getName()));
 
                 double baseDamage = Math.max(1.0, monster.getAttackPower() - wanderer.getDefense()) * defMult;
 
                 double finalDamage = wanderer.modifyDamageTaken(baseDamage);
+
+                if (note != null){
+                    System.out.println(note);
+                }
 
                 System.out.println(String.format("Damage ke %s: %.2f", wanderer.getName(), finalDamage));
                 wanderer.takeDamage(finalDamage);

@@ -41,15 +41,15 @@ public class Wanderer extends User implements Combatant {
         return true;
     }
 
-    public void addExp(int amount) {
+    public String addExp(int amount) {
         this.exp += amount;
         if (this.exp > 1310720000){
             this.exp = 1310720000;
         }
 
-        while (this.exp >= this.level * 100) {
-            this.exp -= this.level * 100;
-            
+        String levelUp = "";
+
+        while (this.level < 20 && this.exp >= getNextLevelExp(this.level)) {
             this.level++;
             
             this.maxHp += 10.0;
@@ -58,8 +58,10 @@ public class Wanderer extends User implements Combatant {
             
             this.currentHp = this.maxHp;
             
-            System.out.println("Selamat! " + getName() + " naik ke Level " + this.level + "!");
+            levelUp += String.format("Selamat! %s naik ke Level %d!\n", getName(), this.level);
         }
+
+        return levelUp;
     }
 
     public void addCoins(int amount) {
@@ -106,12 +108,14 @@ public class Wanderer extends User implements Combatant {
     }
 
     void setCustomDamageNote(String customDamageNote) {
-        // TODO
+        this.customDamageNote = customDamageNote;
     }
 
     String consumeCustomDamageNote() {
-        // TODO
-        return null;
+        String x = this.customDamageNote;
+        this.customDamageNote = null;
+        return x;
+        
     }
 
     @Override

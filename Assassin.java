@@ -12,7 +12,7 @@ public class Assassin extends Wanderer {
             Monster targetMonster = getCurrentTarget();
             if (targetMonster != null){
                 this.bleedDiTerapkanCount++;
-                System.out.println("[ASSASISIN] " + targetMonster.getName() + " terkena Bleed!");
+                setCustomDamageNote("[ASSASISIN] " + targetMonster.getName() + " terkena Bleed!");
                 targetMonster.applyBleed(this.getName(), getAttackPower() * 0.20);
                 
             }

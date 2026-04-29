@@ -97,62 +97,61 @@ public class Main {
                 case "3" ->{
                     if (gm.getMonsters().isEmpty()){
                         System.out.println("Monster belum ada. Tambahkan monster terlebih dahulu.");
-                        break;
+                    } else {
+                        System.out.println();
+                        System.out.println("=== Tanbah Quest ===");
+                        System.out.print("Masukkan nama quest: ");
+                        String questName = scanner.nextLine().strip();
+
+                        System.out.print("Masukkan deskripsi quest: ");
+                        String questDesc = scanner.nextLine().strip();
+
+                        System.out.print("Masukkan tingkat kesulitan (mudah/menengah/sulit); ");
+                        String questDiff = scanner.nextLine().strip();
+                        Difficulty difficulty = Difficulty.fromString(questDiff);
+
+
+                        System.out.println("Pilih monster:");
+                        ArrayList<Monster> monsterList = gm.getMonsters();
+                        for (int i = 0; i < monsterList.size(); i++){
+                            System.out.println((i + 1) + ". " + monsterList.get(i).getName());
+                        }
+                        
+                        System.out.print("Masukkan nomor monster: ");
+                        int nomorMonster = Integer.parseInt(scanner.nextLine().strip());
+
+                        if (nomorMonster < 1 || nomorMonster > monsterList.size()){
+                            System.out.println("Pilihan monster tidak valid.");
+                        }
+                        Monster targetMoster = monsterList.get(nomorMonster-1);
+
+                        System.out.print("""
+                                Pilih tipe quest
+                                1. Daily
+                                2. Regular
+                                3. Bounty
+                                Masukkan pilihan tipe quest: """);
+                        int tipeQuest = Integer.parseInt(scanner.nextLine().strip());
+                        
+                        int bonusExp = 0;
+                        int bonusCoin = 0;
+
+                        if (tipeQuest == 3){
+                            System.out.println("Masukkan bonus EXP: ");
+                            bonusExp = Integer.parseInt(scanner.nextLine().strip());
+
+                            System.out.println("Masukkan bonus Koin: ");
+                            bonusCoin = Integer.parseInt(scanner.nextLine().strip());
+                        }
+
+                        int minLevel = difficulty.getMinWandererLevel();
+
+                        gm.addQuest(tipeQuest, questName, questDesc, difficulty, targetMoster, minLevel, bonusExp, bonusCoin);
+
+
+
+                        System.out.println("Quest berhasil ditambahkan!");
                     }
-
-                    System.out.println();
-                    System.out.println("=== Tanbah Quest ===");
-                    System.out.print("Masukkan nama quest: ");
-                    String questName = scanner.nextLine().strip();
-
-                    System.out.print("Masukkan deskripsi quest: ");
-                    String questDesc = scanner.nextLine().strip();
-
-                    System.out.print("Masukkan tingkat kesulitan (mudah/menengah/sulit); ");
-                    String questDiff = scanner.nextLine().strip();
-                    Difficulty difficulty = Difficulty.fromString(questDiff);
-
-
-                    System.out.println("Pilih monster:");
-                    ArrayList<Monster> monsterList = gm.getMonsters();
-                    for (int i = 0; i < monsterList.size(); i++){
-                        System.out.println((i + 1) + ". " + monsterList.get(i).getName());
-                    }
-                    
-                    System.out.print("Masukkan nomor monster: ");
-                    int nomorMonster = Integer.parseInt(scanner.nextLine().strip());
-
-                    if (nomorMonster < 1 || nomorMonster > monsterList.size()){
-                        System.out.println("Pilihan monster tidak valid.");
-                    }
-                    Monster targetMoster = monsterList.get(nomorMonster-1);
-
-                    System.out.print("""
-                            Pilih tipe quest
-                            1. Daily
-                            2. Regular
-                            3. Bounty
-                            Masukkan pilihan tipe quest: """);
-                    int tipeQuest = Integer.parseInt(scanner.nextLine().strip());
-                    
-                    int bonusExp = 0;
-                    int bonusCoin = 0;
-
-                    if (tipeQuest == 3){
-                        System.out.println("Masukkan bonus EXP: ");
-                        bonusExp = Integer.parseInt(scanner.nextLine().strip());
-
-                        System.out.println("Masukkan bonus Koin: ");
-                        bonusCoin = Integer.parseInt(scanner.nextLine().strip());
-                    }
-
-                    int minLevel = difficulty.getMinWandererLevel();
-
-                    gm.addQuest(tipeQuest, questName, questDesc, difficulty, targetMoster, minLevel, bonusExp, bonusCoin);
-
-
-
-                    System.out.println("Quest berhasil ditambahkan!");
                 }
             
                 case "4" -> {
@@ -284,28 +283,26 @@ public class Main {
                             Masukkan input: """);
                     String sortInput = scanner.nextLine().strip();
 
-                    System.out.print("Masukkan order urutan (asc/desc), masukkan x untuk kembali ke menu utama: ");
-                    String ascDesc = scanner.nextLine().strip();
+                    if (!sortInput.equalsIgnoreCase("x")){
 
-                    if (sortInput.equalsIgnoreCase("x")){
-                        break;
-                    }
+                        System.out.print("Masukkan order urutan (asc/desc), masukkan x untuk kembali ke menu utama: ");
+                        String ascDesc = scanner.nextLine().strip();
+                        boolean asc = ascDesc.equalsIgnoreCase("asc");
 
-                    boolean asc = ascDesc.equalsIgnoreCase("asc");
+                        ArrayList<Quest> sortedQuests = new ArrayList<>();
+                        if (sortInput.equals("1")){
+                            sortedQuests = gm.sortQuestByDifficulty(asc);
+                        } else if (sortInput.equalsIgnoreCase("2")){
+                            sortedQuests = gm.sortQuestByReward(asc);
+                        }
 
-                    ArrayList<Quest> sortedQuests = new ArrayList<>();
-                    if (sortInput.equals("1")){
-                        sortedQuests = gm.sortQuestByDifficulty(asc);
-                    } else if (sortInput.equalsIgnoreCase("2")){
-                        sortedQuests = gm.sortQuestByReward(asc);
-                    }
-
-                    if (sortedQuests.isEmpty()){
-                        System.out.println("Belum ada quest yang terdaftar.");
-                    } else {
-                        System.out.println("Daftar quest terurut:");
-                        for (Quest quest : sortedQuests){
-                            System.out.println(quest.toString());
+                        if (sortedQuests.isEmpty()){
+                            System.out.println("Belum ada quest yang terdaftar.");
+                        } else {
+                            System.out.println("Daftar quest terurut:");
+                            for (Quest quest : sortedQuests){
+                                System.out.println(quest.toString());
+                            }
                         }
                     }
                 }
@@ -420,28 +417,25 @@ public class Main {
                             Masukkan input: """);
                     String sortInput = scanner.nextLine().strip();
 
-                    System.out.print("Masukkan order urutan (asc/desc), masukkan x untuk kembali ke menu utama: ");
-                    String ascDesc = scanner.nextLine().strip();
+                    if (!sortInput.equalsIgnoreCase("x")){
+                        System.out.print("Masukkan order urutan (asc/desc), masukkan x untuk kembali ke menu utama: ");
+                        String ascDesc = scanner.nextLine().strip();
+                        boolean asc = ascDesc.equalsIgnoreCase("asc");
 
-                    if (sortInput.equalsIgnoreCase("x")){
-                        break;
-                    }
+                        ArrayList<Quest> sortedQuests = new ArrayList<>();
+                        if (sortInput.equals("1")){
+                            sortedQuests = gm.sortQuestByReward(asc);
+                        } else if (sortInput.equalsIgnoreCase("2")){
+                            sortedQuests = gm.sortQuestByDifficulty(asc);
+                        }
 
-                    boolean asc = ascDesc.equalsIgnoreCase("asc");
-
-                    ArrayList<Quest> sortedQuests = new ArrayList<>();
-                    if (sortInput.equals("1")){
-                        sortedQuests = gm.sortQuestByReward(asc);
-                    } else if (sortInput.equalsIgnoreCase("2")){
-                        sortedQuests = gm.sortQuestByDifficulty(asc);
-                    }
-
-                    if (sortedQuests.isEmpty()){
-                        System.out.println("Belum ada quest yang terdaftar.");
-                    } else {
-                        System.out.println("Daftar quest terurut:");
-                        for (Quest quest : sortedQuests){
-                            System.out.println(quest.toString());
+                        if (sortedQuests.isEmpty()){
+                            System.out.println("Belum ada quest yang terdaftar.");
+                        } else {
+                            System.out.println("Daftar quest terurut:");
+                            for (Quest quest : sortedQuests){
+                                System.out.println(quest.toString());
+                            }
                         }
                     }
                 }

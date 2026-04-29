@@ -9,7 +9,7 @@ public class Tank extends Wanderer {
     public double modifyDamageTaken(double incomingDamage) {
         if (getCurrentHp() <= 0.3 * getMaxHp()){
             this.shieldCount++;
-            System.out.println("[TANK] Shield menyala! Damage terpotong 50%");
+            setCustomDamageNote("[TANK] Shield menyala! Damage terpotong 50%");
             return incomingDamage * 0.5;
         }
         return incomingDamage;

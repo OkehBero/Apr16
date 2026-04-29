@@ -72,13 +72,7 @@ public class GameManager {
     }
 
     public int nextMonsterId() {
-        int count = 1;
-        for (Monster monster : monsters) {
-            if (monster instanceof Monster) {
-                count++;
-            }
-        }
-        return count;
+        return this.monsters.size()+1;
     }
 
     public void addQuest(Quest quest) {
@@ -98,13 +92,7 @@ public class GameManager {
     }
 
     public int nextQuestId() {
-        int count = 1;
-        for (Quest quest : quests) {
-            if (quest instanceof Quest) {
-                count++;
-            }
-        }
-        return count;
+        return this.quests.size()+1;
     }
 
     public Quest findQuestById(String id) {
@@ -205,8 +193,8 @@ public class GameManager {
         }
 
         for (Quest quest: quests){
-            if (quest instanceof DailyQuest){
-                ((DailyQuest) quest).reset();
+            if (quest instanceof Repeatable){
+                ((Repeatable) quest).reset();
             }
         }
     }

@@ -29,7 +29,7 @@ public class Fighter extends Wanderer {
             }
 
             int persenan = this.furyStacks * 10;
-            System.out.println("[FIGHTER] Fury Stacks (" + stacks + ") aktif, Damage bertambah sebesar " + persenan + "% ATK!");
+            setCustomDamageNote("[FIGHTER] Fury Stacks (" + stacks + ") aktif, Damage bertambah sebesar " + persenan + "% ATK!");
             return baseDamage + (getAttackPower() * persenan / 100.0);
         }
         return baseDamage;
@@ -40,10 +40,10 @@ public class Fighter extends Wanderer {
         if (this.furyStacks == 3){
             this.furyStacks = 0;
             this.resetStackCount++;
-            System.out.println("[FIGHTER] Stacks full, reset ke 0!");
+            setCustomDamageNote("[FIGHTER] Stacks full, reset ke 0!");
         } else {
             this.furyStacks++;
-            System.out.println("[FIGHTER] Stacks bertambah!");
+            setCustomDamageNote("[FIGHTER] Stacks bertambah!");
         }
     }
 

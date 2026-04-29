@@ -21,9 +21,9 @@ public class Support extends Wanderer {
             setCurrentHp(getCurrentHp() + heal);
             this.healCount++;
             this.totalHeal += heal;
+            setCustomDamageNote(String.format("[SUPPORT]: %s memulihkan %.2f HP!", getName(), heal));
         }
-
-        System.out.println(String.format("[SUPPORT]: %s memulihkan %.2f HP!", getName(), heal));
+        
     }
 
     @Override

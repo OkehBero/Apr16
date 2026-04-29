@@ -20,7 +20,7 @@ public class Mage extends Wanderer {
     public double modifyDamageDealt(double baseDamage) {
         if (this.overcharged) {
             this.burstCount++;
-            System.out.println("[MAGE] Arcane Burst Aktif!");
+            setCustomDamageNote("[MAGE] Arcane Burst Aktif!");
             this.overcharged = false;
             this.usedBurstThisTurn = true;
             return getAttackPower() * 2.0;
@@ -34,7 +34,7 @@ public class Mage extends Wanderer {
         if (!this.overcharged && !this.usedBurstThisTurn){
             this.overcharged = true;
             this.overchargedCount++;
-            System.out.println("[MAGE] Mana terkumpul! Overcharged untuk serangna berikutnya.");
+            setCustomDamageNote("[MAGE] Mana terkumpul! Overcharged untuk serangna berikutnya.");
         }
     }
 
