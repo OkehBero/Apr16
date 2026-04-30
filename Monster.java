@@ -1,4 +1,6 @@
 public class Monster implements Combatant {
+
+    // === Attribute dasar ===
     private String monsterId;
     private String name;
     private double  maxHp;
@@ -7,12 +9,15 @@ public class Monster implements Combatant {
     private double  defense;
     private int expReward;
     private int coinReward;
+
+    // === Attribute battle ===
     private boolean bleeding;
     private double bleedDamage;
     private String bleedSourceName;
     private int bleedCount;
     private String customDamageNote;
 
+    // === Constructor ===
     public Monster(int idNumber, String name, double  maxHp,
                    double  attackPower, double  defense,
                    int expReward, int coinReward) {
@@ -27,6 +32,7 @@ public class Monster implements Combatant {
         this.coinReward = coinReward;
     }
 
+    // === Basic getter ===
     public String getMonsterId() { return this.monsterId; }
     public int getExpReward() { return this.expReward; }
     public int getCoinReward() { return this.coinReward; }
@@ -34,10 +40,21 @@ public class Monster implements Combatant {
     public double getCurrentHp() {return this.currentHp;}
     public int getBleedCount() {return this.bleedCount;}
 
-    public void resetHp() {
-        this.currentHp = this.maxHp;
-    }
+    // === Mekanisme Battle & Status effect
 
+    // Rollback HP monster ke state sebelum battle
+    public void resetHp() { this.currentHp = this.maxHp; }
+
+    // Reset status effect dan log battle
+    public void resetBattleState() {
+        this.bleeding = false;
+        this.bleedDamage = 0.0;
+        this.bleedSourceName = null;
+        this.bleedCount = 0;
+        this.customDamageNote = null;
+    }
+    
+    // Apply bleed dari Assassin
     void applyBleed(String sourceName, double bleedDamage) {
         this.bleeding = true;
         this.bleedSourceName = sourceName;
@@ -45,16 +62,7 @@ public class Monster implements Combatant {
 
     }
 
-    void setCustomDamageNote(String note){
-        this.customDamageNote = note;
-    }
-
-    public String consumeCustomDamageNote(){
-        String x = this.customDamageNote;
-        this.customDamageNote = null;
-        return x;
-    }
-
+    // Lifecycle hook (Dijalankan setiap turn monster)
     public void onTurnStart() {
         if (this.bleeding){
             takeDamage(bleedDamage);
@@ -63,16 +71,17 @@ public class Monster implements Combatant {
             this.bleeding = false;
         }
     }
+    
+    // Custom note untuk log pertempuran
+    void setCustomDamageNote(String note) { this.customDamageNote = note; }
 
-    public void resetBattleState() {
-        this.bleeding = false;
-        this.bleedDamage = 0.0;
-        this.bleedSourceName = null;
-        this.bleedCount = 0;
+    public String consumeCustomDamageNote(){
+        String x = this.customDamageNote;
         this.customDamageNote = null;
+        return x;
     }
 
-    // Implementasi Combatant
+    // === Implementasi Combatant ===
     @Override
     public String getName() { return this.name; }
 
@@ -85,6 +94,7 @@ public class Monster implements Combatant {
     @Override
     public void takeDamage(double damage) {
         this.currentHp -= damage;
+        // Hp akan selalu bilangan bulat non-negatif
         if (this.currentHp < 0) {
             this.currentHp = 0; 
         }
@@ -94,8 +104,9 @@ public class Monster implements Combatant {
     public boolean isDefeated() { return this.currentHp <= 0; }
 
     @Override
-    public String getCombatInfo() { return String.format("%s (HP: %.2f/%.2f)", this.name, this.currentHp, this.maxHp); }
+    public String getCombatInfo() { return String.format("%s | HP: %.2f/%.2f | ATK: %.2f | DEF: %.2f", this.name, this.currentHp, this.maxHp, this.attackPower, this.defense); }
 
+    // === toString Method ===
     @Override
     public String toString() {
         return String.format("""

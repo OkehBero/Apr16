@@ -1,11 +1,13 @@
 import java.util.ArrayList;
 
 public class GameManager {
+    // === Attribute ===
     private ArrayList<User> users;
     private ArrayList<Monster> monsters;
     private ArrayList<Quest> quests;
     private int currentDay;
 
+    // === Constructor ===
     public GameManager() {
         this.users = new ArrayList<>();
         this.monsters = new ArrayList<>();
@@ -15,6 +17,7 @@ public class GameManager {
         this.users.add(new Admin("Burhan", "burhan", "burunghantu123")); // hardcode admin
     }
 
+    // Method Login
     public User login(String username, String password) {
         for (User user : users) {
             if (user.authenticate(username, password)) {
@@ -24,27 +27,32 @@ public class GameManager {
         return null;
     }
 
+    // Method menambahkan wanderer
     public void addWanderer(int idNumber, String name, String username,
                     String password, double maxHp, double attack, double defense, String jobClass)
-                    throws DuplicateWandererException, IllegalArgumentException {
+                    throws DuplicateWandererException, IllegalArgumentException { // throw exception
         
-        if (isUsernameTaken(username)){
-            throw new DuplicateWandererException("Username sudah digunakan.");
-        }
-        
-        if (maxHp <= 0){
-            throw new IllegalArgumentException("HP maksimal harus bilangan positif");
+        if (isUsernameTaken(username)){ // Cek apakah username sudah dipakai
+            throw new DuplicateWandererException(String.format("Username '%s' sudah digunakan.", username));
         }
 
-        if (attack <= 0){
+        if (name == null || name.isEmpty()){
+            throw new IllegalArgumentException("Input nama tidak boleh kosong.");
+        }
+        
+        if (maxHp <= 0){ // validasi input maxHp
+            throw new IllegalArgumentException("HP maksimal harus bilangan positif.");
+        }
+
+        if (attack <= 0){  // validasi input attack
             throw new IllegalArgumentException("Attack harus bilangan positif.");
         }
 
-        if (defense <= 0) {
+        if (defense <= 0) { // validasi input defense
             throw new IllegalArgumentException("Defense harus bilangan positif.");
         }
 
-
+        // Memilih job class dan validasi job class
         Wanderer wanderer = switch (jobClass) {
             case "1" -> new Wanderer(nextWandererId(), name, username, password, maxHp, attack, defense);
             case "2" -> new Tank(nextWandererId(), name, username, password, maxHp, attack, defense);
@@ -54,11 +62,12 @@ public class GameManager {
             case "6" -> new Support(nextWandererId(), name, username, password, maxHp, attack, defense);
 
         
-            default -> throw new IllegalArgumentException("Input job class tidak valid.");
+            default -> throw new IllegalArgumentException("Input job class tidak valid."); // throw ini jika input user tidak valid
         };
-        this.users.add(wanderer);
+        this.users.add(wanderer); // tambahkan wanderer jika tidak ada error
     }
 
+    // Method untuk mnengecek apakah username sudah diapakai
     public boolean isUsernameTaken(String username) {
         for (User user : users) {
             if (user.getUsername().equals(username)) {
@@ -68,6 +77,7 @@ public class GameManager {
         return false;
     }
 
+    // Method untuk mengecek apakah nama monster sudah terpakai
     public boolean isMosterNameTaken(String name){
         for (Monster monster : monsters){
             if (monster.getName().equals(name)){
@@ -77,6 +87,7 @@ public class GameManager {
         return false;
     }
 
+    // Method untuk mendapatkan Id wanderer berikutnya
     public int nextWandererId() {
         int count = 1;
         for (User user : users) {
@@ -87,103 +98,134 @@ public class GameManager {
         return count;
     }
 
-    public void addMonster(Monster monster) throws IllegalArgumentException{
-        if (isMosterNameTaken(monster.getName())){
-            throw new IllegalArgumentException("Nama monster sudah digunakan.");
+    // Method untuk menambahkan Monster
+    public void addMonster(Monster monster) throws IllegalArgumentException{ 
+
+        if (isMosterNameTaken(monster.getName())){ // validasi apakah nama monster sudah digunakan
+            throw new IllegalArgumentException(String.format("Nama monster '%s' sudah digunakan.", monster.getName()));
         }
 
-        if (monster.getMaxHp() <= 0){
+        if (monster.getName() == null || monster.getName().isBlank()){
+            throw new IllegalArgumentException("Nama monster tidak boleh kosong");
+        }
+
+        if (monster.getMaxHp() <= 0){ // validasi input maxHp monster
             throw new IllegalArgumentException("HP maksimal harus bilangan positif.");
         }
 
-        if (monster.getAttackPower() <= 0){
+        if (monster.getAttackPower() <= 0){ // validasi input attack monster
             throw new IllegalArgumentException("Attak harus bilangan positif.");
         }
 
-        if (monster.getDefense() <= 0){
+        if (monster.getDefense() <= 0){ // validasi input defense monster
             throw new IllegalArgumentException("Defense harus bilangan positif.");
         }
 
-        this.monsters.add(monster);
+        if (monster.getCoinReward() < 0){
+            throw new IllegalArgumentException("Reward koin harus bilangan positif");
+        }
+
+        if (monster.getExpReward() < 0){
+            throw new IllegalArgumentException("Reward exp harus bilangan positif");
+        }
+
+        this.monsters.add(monster); // tambahkan monster jika tidak ada error
     }
 
+    // Method untuk mendapatkan Id monster berikutnya
     public int nextMonsterId() {
         return this.monsters.size()+1;
     }
 
+    // Method untuk menambahkan quest
     public void addQuest(Quest quest) {
         this.quests.add(quest);
     }
 
+    // Method untuk menambahkan quest
     public void addQuest(int questType, String name, String description, Difficulty difficulty, Monster monster, int minLevel, int bonusExp, int bonusCoin) throws IllegalArgumentException{
-        int questId = nextQuestId();
+        int questId = nextQuestId(); // Untuk mendapatkan Id quest untuk quest saat ini
 
-        if (difficulty == null){
+        if (difficulty == null){ // validasi input difficulty
             throw new IllegalArgumentException("Input difficulty tidak valid");
         }
 
+        if (name == null || name.isEmpty()){
+            throw new IllegalArgumentException("Input nama tidak boleh kosong");
+        }
+
+        if (bonusExp < 0) {throw new IllegalArgumentException("Input bonus exp tidak boleh negatif.");}
+        if (bonusCoin < 0) {throw new IllegalArgumentException("Input bonus koin tidak boleh negatif.");}
+
+        // validasi input tipe quest sekaligus menambahkan quest
         switch (questType) {
-            case 1 -> addQuest(new RegularQuest(questId, name, description, difficulty, monster, minLevel));
-            case 2 -> addQuest(new DailyQuest(questId, name, description, difficulty, monster, minLevel));
+            case 1 -> addQuest(new DailyQuest(questId, name, description, difficulty, monster, minLevel));
+            case 2 -> addQuest(new RegularQuest(questId, name, description, difficulty, monster, minLevel));
             case 3 -> addQuest(new BountyQuest(questId, name, description, difficulty, monster, minLevel, bonusExp, bonusCoin));
 
             default -> throw new IllegalArgumentException("Input tipe quest tidak valid.");
         };
     }
 
+    // Method untuk mendapatkan Id Quest berikutnya
     public int nextQuestId() {
         return this.quests.size()+1;
     }
 
+    // Method untuk mendapatkan quest berdasarkan Id
     public Quest findQuestById(String id) throws IllegalArgumentException{
         for (Quest quest : this.quests){
             if (quest.getId().equalsIgnoreCase(id.strip())){
-                return quest;
+                return quest; // return quest jika quest ditemukan
             }
         }
-        throw new IllegalArgumentException("Quest tidak ditemukan di sistem.");
+        throw new IllegalArgumentException("Quest tidak ditemukan di sistem."); // validasi jika quest tidak ditemukan
     }
 
+    // Method untuk take Quest
     public Quest takeQuestValidation(Wanderer wanderer, String idQuest) throws IllegalArgumentException, IllegalStateException, InsufficientLevelException {
         Quest quest = findQuestById(idQuest);
         
-        if (quest.getStatus() != QuestStatus.TERSEDIA){
+        if (quest.getStatus() != QuestStatus.TERSEDIA){ // validasi apakah quest tersedia un
             throw new IllegalStateException("Quest tidak tersedia atau sudah selesai.");
         }
 
-        if (wanderer.getLevel() < quest.getDifficulty().getMinWandererLevel()){
+        if (wanderer.getLevel() < quest.getDifficulty().getMinWandererLevel()){ // validasi apakah level pengembara memenuhi syarat
             throw new InsufficientLevelException("Level pengembara tidak cukup.");
         }
 
         return quest;
     }
 
+    //  Method untuk mendapatkan objek monster dari Id
     public Monster findMonsterById(String id) throws IllegalArgumentException{
         for (Monster monster : this.monsters){
-            if (String.valueOf(monster.getMonsterId()).equalsIgnoreCase(id.strip())){
-                return monster;
+            if (String.valueOf(monster.getMonsterId()).equalsIgnoreCase("M"+id.strip())){
+                return monster; // return objek monster jika dapat
             }
         }
 
-        throw new IllegalArgumentException("Nomor monster tidak valid." );
+        throw new IllegalArgumentException("Nomor monster tidak valid." ); // validasi input Id monster
     }
 
+    // Method untuk memfilter quest berdasarkan difficulty
     public ArrayList<Quest> filterQuestByDifficulty(Difficulty difficulty) throws IllegalArgumentException{
-        if (difficulty == null){
+        if (difficulty == null){ // validasi input difficulty
             throw new IllegalArgumentException("Input difficulty tidak valid.");
         }
         
-        ArrayList<Quest> filtered = new ArrayList<>();
+        ArrayList<Quest> filtered = new ArrayList<>(); 
         for (Quest q : this.quests) {
             if (q.getDifficulty() == difficulty) {
-                filtered.add(q);
+                filtered.add(q); // Tambahkan jika sesuai kriteria
             }
         }
-        return filtered;
+        return filtered; // return quest yang sudah ter-sort
     }
 
+    // Method untuk filter wanderer berdasarkan leevel
     public ArrayList<User> filterWandererByLevel(int min, int max) throws IllegalArgumentException {
-        if (min < 0 || max < min){
+        if (min < 0 || max < min){ // Validasi input rentang level
             throw new IllegalArgumentException("Range level tidak valid.");
         }
         
@@ -191,12 +233,13 @@ public class GameManager {
         for (User user : getWanderers()) {
             Wanderer w = (Wanderer) user;
             if (w.getLevel() >= min && w.getLevel() <= max) {
-                filtered.add(w);
+                filtered.add(w); // Tampung ke suatu variabel jika memenuhi kriteria
             }
         }
-        return filtered;
+        return filtered; // return wanderer yang sudah di filter
     }
 
+    // Method untuk men-sort quest berdasarkan reward
     public ArrayList<Quest> sortQuestByReward(boolean asc) {
         ArrayList<Quest> sorted = new ArrayList<>(this.quests);
         sorted.sort((quest1, quest2) -> {
@@ -211,6 +254,7 @@ public class GameManager {
         return sorted;
     }
 
+    // Method untuk men-sort Quest berdasrkan difficulty
     public ArrayList<Quest> sortQuestByDifficulty(boolean asc) {
         ArrayList<Quest> sorted = new ArrayList<>(this.quests);
         sorted.sort((quest1, quest2) -> {
@@ -225,15 +269,18 @@ public class GameManager {
         return sorted;
     }
 
+    // Mehtod untuk men-sort Wanderer berdasarkan nama
     public ArrayList<User> sortWandererByName(boolean asc) {
         ArrayList<User> sorted = getWanderers();
         sorted.sort((u1, u2) -> {
+            // Urutkan berdaarkan nama
             int cmp = u1.getName().compareToIgnoreCase(u2.getName());
             return asc ? cmp : -cmp;
         });
         return sorted;
     }
 
+    // Method untuk mengurutkan Wanderer berdasarkan level
     public ArrayList<User> sortWandererByLevel(boolean asc) {
         ArrayList<User> sorted = getWanderers();
         sorted.sort((u1, u2) -> {
@@ -251,14 +298,17 @@ public class GameManager {
         return sorted;
     }
 
+    // Logika next day
     public void advanceDay() {
-        this.currentDay++;
+        this.currentDay++; // menambahkan currentDay dengan 1
 
+        // Men-set hp wanderer ke maxHp masing-masing
         for (User user : getWanderers()){
             Wanderer wanderer = (Wanderer) user;
             wanderer.setCurrentHp(wanderer.getMaxHp());
         }
 
+        // Me-reset daily quest
         for (Quest quest: quests){
             if (quest instanceof Repeatable){
                 ((Repeatable) quest).reset();
@@ -266,8 +316,10 @@ public class GameManager {
         }
     }
 
+    // Getter attribute currentDay
     public int getCurrentDay() { return this.currentDay; }
 
+    // Method untuk menampilkan wanderer
     public ArrayList<User> getWanderers() {
         ArrayList<User> wanderers = new ArrayList<>();
         for (User user : users) {
@@ -278,10 +330,12 @@ public class GameManager {
         return wanderers; 
     }
 
+    // method untuk menampilkan monster
     public ArrayList<Monster> getMonsters() {
         return this.monsters;
     }
 
+    // method untuk nenampilkan quest
     public ArrayList<Quest> getQuests() {
         return this.quests;
     }

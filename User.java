@@ -15,16 +15,10 @@ public abstract class User {
         return this.username.equals(username) && this.password.equals(password);
     }
 
-    public String getName() {
-        return this.name;
-    }
+    public String getName() { return this.name; }
 
-    public String getUsername() {
-        return this.username;
-    }
+    public String getUsername() { return this.username; }
 
     @Override
-    public String toString() {
-        return this.name;
-    }
+    public String toString() { return this.name; }
 }

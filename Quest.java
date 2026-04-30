@@ -1,5 +1,6 @@
 // Quest.java
 public abstract class Quest implements Completable {
+    // === Attribute ===
     private String id;
     private String name;
     private String description;
@@ -8,9 +9,11 @@ public abstract class Quest implements Completable {
     private int minLevel;
     private QuestStatus status;
 
+    // === Constructor ===
     public Quest(int idNumber, String name, String description,
                  Difficulty difficulty, Monster monster, int minLevel) {
 
+        
         this.id = "Q" + idNumber;
         this.name = name;
         this.description = description;
@@ -20,15 +23,8 @@ public abstract class Quest implements Completable {
         this.status = QuestStatus.TERSEDIA;
     }
 
+    // === Method ===
     public abstract String getQuestType();
-
-    public int getExpReward() {
-        return this.monster.getExpReward() + getBonusExp();
-    }
-
-    public int getCoinReward() {
-        return this.monster.getCoinReward() + getBonusCoin();
-    }
 
     protected int getBonusExp() { return 0; }
     protected int getBonusCoin() { return 0; }
@@ -47,13 +43,17 @@ public abstract class Quest implements Completable {
         this.status = QuestStatus.TERSEDIA;
     }
 
+    // === Getter Method ===
     public String getId() { return this.id; }
     public String getName() { return this.name; }
     public Difficulty getDifficulty() { return this.difficulty; }
     public Monster getMonster() { return this.monster; }
     public int getMinLevel() { return this.minLevel; }
     public QuestStatus getStatus() { return this.status; }
+    public int getExpReward() { return this.monster.getExpReward() + getBonusExp(); }
+    public int getCoinReward() { return this.monster.getCoinReward() + getBonusCoin(); }
 
+    // === toString Method ===
     @Override
     public String toString() {
         return String.format("""
@@ -65,8 +65,7 @@ public abstract class Quest implements Completable {
                 Monster: %s
                 Level Minimum: %d
                 Reward Koin: %d
-                Reward Exp: %d
-                """,
+                Reward Exp: %d""",
                 this.getId(),
                 this.getName(),
                 this.getQuestType(),

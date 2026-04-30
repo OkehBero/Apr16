@@ -10,13 +10,11 @@ public class Admin extends User {
 
     @Override
     public String getWelcomeMessage() {
-        // TODO
         return "Login berhasil! Selamat datang, " + getName() + ".";
     }
 
     @Override
     public String toString() {
-        // TODO
         return "Admin: " + getName() + " (" + getUsername() + ")";
     }
 }

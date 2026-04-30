@@ -504,7 +504,7 @@ public class Main {
                         if (questList.isEmpty()){
                             System.out.println("Belum ada quest yang terdaftar di sistem.");
                         } else{
-                            System.out.println("Masukkan ID Quest yang ingin diambil (atau 'X'/'x' untuk kembali: ");
+                            System.out.print("Masukkan ID Quest yang ingin diambil (atau 'X'/'x' untuk kembali: ");
                             String idQuest = scanner.nextLine().strip();
 
                             if (!idQuest.equalsIgnoreCase("x")){

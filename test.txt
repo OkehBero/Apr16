@@ -4,9 +4,9 @@ burunghantu123
 5
 Training Dummy
 10
-0
-0
-80000
+1
+1
+81920000
 100
 5
 Aura
@@ -43,3 +43,90 @@ Tejo
 30
 100
 50
+6
+3
+Latihan Level
+Naik level sampai menengah
+mudah
+1
+1
+3
+Membasi Arwah Terkutuk
+Latihan battle Mage
+menengah
+2
+2
+3
+Q8
+Latihan battle Tank
+menengah
+3
+2
+3
+bonus
+Latihan battle Fighter
+mudah
+4
+3
+1000000
+1000000
+3
+Q1
+Latihan battle Assassin
+mudah
+5
+1
+3
+Q3
+Latihan battle Support
+mudah
+6
+1
+1
+4
+Frieren
+frieren
+himmel123
+100
+50
+20
+3
+4
+Reinhardt
+reinhardt
+tank123
+150
+25
+50
+2
+4
+Guinevere
+guinevere
+fighter123
+125
+45
+40
+5
+4
+Akali
+akali
+assassin123
+49
+60
+25
+4
+4
+Sage
+sage
+support123
+100
+30
+30
+6
+0
+1
+reinhardt
+tank123
+5
+Q1
+5

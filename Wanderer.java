@@ -3,6 +3,8 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 public class Wanderer extends User implements Combatant {
+    
+    // === Attribute dasar ===
     private String id;
     private int level;
     private int exp;
@@ -11,12 +13,16 @@ public class Wanderer extends User implements Combatant {
     private double maxHp;
     private double attack;
     private double defense;
+
+    // === Attribute battle ===
     private Monster currentTarget;
     private double currentMultiplier;
     private String customDamageNote;
 
+    // === Constructor ===
     public Wanderer(int idNumber, String name, String username,
                     String password, double maxHp, double attack, double defense) {
+        // inisiasi attribute dari parrent class User
         super(name, username, password);
 
         this.id = "P" + idNumber;
@@ -24,31 +30,36 @@ public class Wanderer extends User implements Combatant {
         this.attack = attack;
         this.defense = defense;
 
+        // inisiasi status awal
         this.level = 1;
         this.exp = 0;
         this.coins = 0;
         this.currentHp = maxHp;
     }
 
+    // === Setter dan getter methods ===
 
-    public String getPassiveTriggerSummary(){
-        return "";
+    public String getId() { return this.id; }
+    public int getLevel() { return this.level; }
+    public String getNameForSorting() { return getName(); }
+    public double getCurrentHp() { return this.currentHp; }
+    public double getMaxHp() { return this.maxHp; }
+
+    public void setCurrentHp(double hp) {
+        this.currentHp = hp;
+    
+        if (this.currentHp > this.maxHp) { this.currentHp = this.maxHp; }
+        else if (this.currentHp < 0) { this.currentHp = 0; }
     }
 
-    public boolean canTakeQuest(Difficulty difficulty) {
-        if (difficulty == Difficulty.MENENGAH) return this.level >= 6;
-        if (difficulty == Difficulty.SULIT) return this.level >= 16;
-        return true;
-    }
+    // Sistem
 
-    public String addExp(int amount) {
+    public void addExp(int amount) {
         this.exp += amount;
-        if (this.exp > 1310720000){
-            this.exp = 1310720000;
-        }
+        // Menetapkan maksimal EXP yang bisa didapatkan pengembara
+        if (this.exp > 1310720000) { this.exp = 1310720000; }
 
-        String levelUp = "";
-
+        // Level up looping
         while (this.level < 20 && this.exp >= getNextLevelExp(this.level)) {
             this.level++;
             
@@ -56,72 +67,64 @@ public class Wanderer extends User implements Combatant {
             this.attack += 2.0;
             this.defense += 2.0;
             
+            // Memulihkan HP hingga penuh saat level up
             this.currentHp = this.maxHp;
-            
-            levelUp += String.format("Selamat! %s naik ke Level %d!\n", getName(), this.level);
         }
 
-        return levelUp;
     }
 
-    public void addCoins(int amount) {
-        this.coins += amount;
-    }
+    public void addCoins(int amount) { this.coins += amount; }
 
     public int getNextLevelExp(int currentLevel) {
-        if (currentLevel == 1){
-            return 5000;
-        }
+        if (currentLevel == 1) { return 5000; }
         return 2 * getNextLevelExp(currentLevel -1);
     }
 
-    public void setCurrentHp(double hp) {
-        this.currentHp = hp;
-        
-        if (this.currentHp > this.maxHp) {
-            this.currentHp = this.maxHp;
-        } else if (this.currentHp < 0) {
-            this.currentHp = 0;
-        }
+    // === Taking Quest ===
+    public boolean canTakeQuest(Difficulty difficulty) {
+        if (difficulty == Difficulty.MENENGAH) return this.level >= 6;
+        if (difficulty == Difficulty.SULIT) return this.level >= 16;
+        return true;
     }
 
-    public double getCurrentHp() {
-        return this.currentHp;
+    // === State dan Lifecycle Battle ===
 
+    public void resetBattleState() {
+        this.currentTarget = null;
+        this.currentMultiplier = 0;
+        this.customDamageNote = null;
     }
 
-    public double getMaxHp(){
-        return this.maxHp;
-    }
-    
     void setBattleContext(Monster target, double multiplier) {
         this.currentTarget = target;
         this.currentMultiplier = multiplier;
     }
 
-    Monster getCurrentTarget() {
-        return this.currentTarget;
-    }
+    Monster getCurrentTarget() { return this.currentTarget; }
+    double getCurrentMultiplier() { return this.currentMultiplier; }
 
-    double getCurrentMultiplier() {
-        return this.currentMultiplier;
-    }
-
-    void setCustomDamageNote(String customDamageNote) {
-        this.customDamageNote = customDamageNote;
-    }
+    void setCustomDamageNote(String customDamageNote) { this.customDamageNote = customDamageNote; }
 
     String consumeCustomDamageNote() {
         String x = this.customDamageNote;
         this.customDamageNote = null;
-        return x;
-        
+        return x;  
     }
 
-    @Override
-    public String getWelcomeMessage() {
-        return "Login berhasil! Selamat datang, " + getName() + ".";
-    }
+    // === METHOD YANG DI OVERRIDE SUBCLASS JOB
+
+    public void onTurnStart() { }
+
+    public double modifyDamageDealt(double baseDamage) { return baseDamage; }
+
+    public double modifyDamageTaken(double incomingDamage) { return incomingDamage; }
+
+    public void onTurnEnd(double result) { }
+
+    public String getPassiveTriggerSummary(){ return ""; }
+
+
+    // === Implementasi Interface (Combatant) ===
 
     // Implementasi Combatant
     @Override
@@ -141,36 +144,18 @@ public class Wanderer extends User implements Combatant {
         }
     }
 
-    // Implementasi mekanisme pertempuran
-    public void onTurnStart() {
-    }
-
-    public double modifyDamageDealt(double baseDamage) {
-        return baseDamage;
-    }
-
-    public double modifyDamageTaken(double incomingDamage) {
-        return incomingDamage;
-    }
-
-    public void onTurnEnd(double result) {
-    }
-
-    public void resetBattleState() {
-        this.currentTarget = null;
-        this.currentMultiplier = 0;
-        this.customDamageNote = null;
-    }
-
-
     @Override
-    public boolean isDefeated() {
-        return this.currentHp <= 0;
-    }
+    public boolean isDefeated() { return this.currentHp <= 0; }
 
     @Override
     public String getCombatInfo() {
         return String.format("%s | HP: %.2f/%.2f | ATK: %.2f | DEF: %.2f", this.getName(), this.currentHp, this.maxHp, this.getAttackPower(), this.getDefense());
+    }
+
+    // =============================================
+    @Override
+    public String getWelcomeMessage() {
+        return "Login berhasil! Selamat datang, " + getName() + ".";
     }
 
     @Override
@@ -201,15 +186,4 @@ public class Wanderer extends User implements Combatant {
         return output;
     }
 
-    public String getId() {
-        return this.id;
-    }
-
-    public int getLevel() {
-        return this.level;
-    }
-
-    public String getNameForSorting() {
-        return getName();
-    }
 }

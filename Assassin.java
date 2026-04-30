@@ -1,14 +1,18 @@
 public class Assassin extends Wanderer {
+    
+    // === Attribute
     private int bleedDiTerapkanCount = 0;
 
+    // Constructor
     public Assassin(int idNumber, String name, String username,
                     String password, double  maxHp, double  attack, double  defense) {
+        // Inisialisasi attribute dari parent class Wanderer
         super(idNumber, name, username, password, maxHp, attack, defense);
     }
 
     @Override
     public double modifyDamageDealt(double baseDamage) {
-        if (Math.random() < 0.5){
+        if (Math.random() < 0.5){ // 50% chance pasif aktif
             Monster targetMonster = getCurrentTarget();
             if (targetMonster != null){
                 this.bleedDiTerapkanCount++;
@@ -20,6 +24,7 @@ public class Assassin extends Wanderer {
         return baseDamage;
     }
 
+    // === Summary ===
     @Override
     public String getPassiveTriggerSummary(){
         int count = 0;
