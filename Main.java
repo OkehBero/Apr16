@@ -95,75 +95,77 @@ public class Main {
                 }
             
                 case "3" ->{
-                    if (gm.getMonsters().isEmpty()){
-                        System.out.println("Monster belum ada. Tambahkan monster terlebih dahulu.");
-                    } else {
-                        System.out.println();
-                        System.out.println("=== Tanbah Quest ===");
-                        System.out.print("Masukkan nama quest: ");
-                        String questName = scanner.nextLine().strip();
+                    try {
+                        if (gm.getMonsters().isEmpty()){
+                            System.out.println("Monster belum ada. Tambahkan monster terlebih dahulu.");
+                        } else {
+                            System.out.println();
+                            System.out.println("=== Tanbah Quest ===");
+                            System.out.print("Masukkan nama quest: ");
+                            String questName = scanner.nextLine().strip();
 
-                        System.out.print("Masukkan deskripsi quest: ");
-                        String questDesc = scanner.nextLine().strip();
+                            System.out.print("Masukkan deskripsi quest: ");
+                            String questDesc = scanner.nextLine().strip();
 
-                        System.out.print("Masukkan tingkat kesulitan (mudah/menengah/sulit); ");
-                        String questDiff = scanner.nextLine().strip();
-                        Difficulty difficulty = Difficulty.fromString(questDiff);
+                            System.out.print("Masukkan tingkat kesulitan (mudah/menengah/sulit); ");
+                            String questDiff = scanner.nextLine().strip();
+                            Difficulty difficulty = Difficulty.fromString(questDiff);
 
 
-                        System.out.println("Pilih monster:");
-                        ArrayList<Monster> monsterList = gm.getMonsters();
-                        for (int i = 0; i < monsterList.size(); i++){
-                            System.out.println((i + 1) + ". " + monsterList.get(i).getName());
+                            System.out.println("Pilih monster:");
+                            ArrayList<Monster> monsterList = gm.getMonsters();
+                            for (int i = 0; i < monsterList.size(); i++){
+                                System.out.println((i + 1) + ". " + monsterList.get(i).getName());
+                            }
+                            
+                            System.out.print("Masukkan nomor monster: ");
+                            String nomorMonster = scanner.nextLine().strip();
+
+                            Monster targetMoster = gm.findMonsterById(nomorMonster);
+
+                            System.out.print("""
+                                    Pilih tipe quest
+                                    1. Daily
+                                    2. Regular
+                                    3. Bounty
+                                    Masukkan pilihan tipe quest: """);
+                            int tipeQuest = Integer.parseInt(scanner.nextLine().strip());
+                            
+                            int bonusExp = 0;
+                            int bonusCoin = 0;
+
+                            if (tipeQuest == 3){
+                                System.out.println("Masukkan bonus EXP: ");
+                                bonusExp = Integer.parseInt(scanner.nextLine().strip());
+
+                                System.out.println("Masukkan bonus Koin: ");
+                                bonusCoin = Integer.parseInt(scanner.nextLine().strip());
+                            }
+
+                            int minLevel = (difficulty != null) ? difficulty.getMinWandererLevel() : 0;
+
+                            gm.addQuest(tipeQuest, questName, questDesc, difficulty, targetMoster, minLevel, bonusExp, bonusCoin);
+
+
+
+                            System.out.println("Quest berhasil ditambahkan!");
                         }
-                        
-                        System.out.print("Masukkan nomor monster: ");
-                        int nomorMonster = Integer.parseInt(scanner.nextLine().strip());
-
-                        if (nomorMonster < 1 || nomorMonster > monsterList.size()){
-                            System.out.println("Pilihan monster tidak valid.");
-                        }
-                        Monster targetMoster = monsterList.get(nomorMonster-1);
-
-                        System.out.print("""
-                                Pilih tipe quest
-                                1. Daily
-                                2. Regular
-                                3. Bounty
-                                Masukkan pilihan tipe quest: """);
-                        int tipeQuest = Integer.parseInt(scanner.nextLine().strip());
-                        
-                        int bonusExp = 0;
-                        int bonusCoin = 0;
-
-                        if (tipeQuest == 3){
-                            System.out.println("Masukkan bonus EXP: ");
-                            bonusExp = Integer.parseInt(scanner.nextLine().strip());
-
-                            System.out.println("Masukkan bonus Koin: ");
-                            bonusCoin = Integer.parseInt(scanner.nextLine().strip());
-                        }
-
-                        int minLevel = difficulty.getMinWandererLevel();
-
-                        gm.addQuest(tipeQuest, questName, questDesc, difficulty, targetMoster, minLevel, bonusExp, bonusCoin);
-
-
-
-                        System.out.println("Quest berhasil ditambahkan!");
+                    } catch (NumberFormatException e){
+                        System.out.println("Input tidak valid: Tipe quest dan bonus harus dalam angka.");
+                    } catch (IllegalArgumentException e){
+                        System.out.println("Input tidak valid: " + e.getMessage());
                     }
                 }
             
                 case "4" -> {
-                    System.out.print("Masukkan nama pengembara: ");
-                    String name = scanner.nextLine().strip();
+                    try {
+                        System.out.print("Masukkan nama pengembara: ");
+                        String name = scanner.nextLine().strip();
 
-                    System.out.print("Masukkan username pengembara: ");
-                    String username = scanner.nextLine().strip();
+                        System.out.print("Masukkan username pengembara: ");
+                        String username = scanner.nextLine().strip();
 
-                    if (gm.isUsernameTaken(username)){
-                        System.out.println("Username sudah digunakan.");
-                    } else{
+                        
                         System.out.print("Masukkan password pengembara: ");
                         String password = scanner.nextLine().strip();
                         System.out.print("Masukkan HP maksimal: ");
@@ -187,16 +189,18 @@ public class Main {
 
                         gm.addWanderer(gm.nextWandererId(), name, username, password, maxHp, attack, defense, jobClass);
                         System.out.println("Pengembara berhasil ditambahkan!");
+                        } catch (NumberFormatException e){
+                            System.out.println("Input tidak valid: Input harus angka.");
+                        } catch (DuplicateWandererException | IllegalArgumentException e){
+                            System.out.println("Input tidak valid: " + e.getMessage());
+                        }
                     }
-                }
             
                 case "5" -> {
-                    System.out.print("Mauskkan nama monster: ");
-                    String monsterName = scanner.nextLine().strip();
+                    try {
+                        System.out.print("Mauskkan nama monster: ");
+                        String monsterName = scanner.nextLine().strip();
 
-                    if (gm.isMosterNameTaken(monsterName)){
-                        System.out.println("Nama sudah digunakan.");
-                    } else {
                         System.out.print("Masukkan Hp maksimal monster: ");
                         double maxHp = Double.parseDouble(scanner.nextLine().strip());
 
@@ -215,9 +219,13 @@ public class Main {
                         Monster newMonster = new Monster(gm.nextMonsterId(), monsterName, maxHp, attackPower, defense, expReward, coinReward);
                         gm.addMonster(newMonster);
                         
+                    } catch (NumberFormatException e) {
+                        System.out.println("Input tidak valid: Input harus angka.");
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Input tidak valid: " + e.getMessage());
                     }
                 }
-            
+                    
                 case "6" -> {
                     System.out.println();
                     System.out.println("=== Daftar Monster ===");
@@ -234,106 +242,139 @@ public class Main {
                 }
             
                 case "7" -> {
-                    System.out.print("Masukkan tingkat kesulitan (mudah/menengah/sulit): ");
-                    String diffInputFilter = scanner.nextLine().strip();
-                    Difficulty diffFilter = Difficulty.fromString(diffInputFilter);
+                    try {
+                        System.out.print("Masukkan tingkat kesulitan (mudah/menengah/sulit): ");
+                        String diffInputFilter = scanner.nextLine().strip();
+                        Difficulty diffFilter = Difficulty.fromString(diffInputFilter);
 
-                    if (diffFilter == null){
-                        System.out.println("Tingkat kesuilitan tidak valid.");
-                    } else {
-                        ArrayList<Quest> filteredQuests = gm.filterQuestByDifficulty(diffFilter);
-                        if (filteredQuests.isEmpty()){
-                            System.out.println("Tidak ada quest dengan difficulty tersebut.");
+                        if (diffFilter == null){
+                            System.out.println("Tingkat kesuilitan tidak valid.");
                         } else {
-                            System.out.println("Hasil filter:");
-                            System.out.println();
-                            for (Quest quest : filteredQuests){
-                                System.out.println(quest.toString());
+                            ArrayList<Quest> filteredQuests = gm.filterQuestByDifficulty(diffFilter);
+                            if (filteredQuests.isEmpty()){
+                                System.out.println("Tidak ada quest dengan difficulty tersebut.");
+                            } else {
+                                System.out.println("Hasil filter:");
                                 System.out.println();
+                                for (Quest quest : filteredQuests){
+                                    System.out.println(quest.toString());
+                                    System.out.println();
+                                }
                             }
                         }
+                    } catch (IllegalArgumentException e){
+                        System.out.println("Input tidak valid: " + e.getMessage());
                     }
                 }
             
                 case "8" -> {
-                    System.out.print("Masukkan level minimum: ");
-                    int min = Integer.parseInt(scanner.nextLine());
+                    try {
+                        System.out.print("Masukkan level minimum: ");
+                        int min = Integer.parseInt(scanner.nextLine());
 
-                    System.out.print("Masukkan level maksimum: ");
-                    int max = Integer.parseInt(scanner.nextLine());
-                    
-                    ArrayList<User> filtered = gm.filterWandererByLevel(min, max);
-                    if(filtered.isEmpty()) {
-                        System.out.println("Tidak ada pengembara pada rentang level tersebut.");
-                    } else {
-                        System.out.println("Hasil pencarian:");
-                        for (User user : filtered) {
-                            System.out.println(user.toString());
-                            System.out.println();
+                        System.out.print("Masukkan level maksimum: ");
+                        int max = Integer.parseInt(scanner.nextLine());
+                        
+                        ArrayList<User> filtered = gm.filterWandererByLevel(min, max);
+                        if(filtered.isEmpty()) {
+                            System.out.println("Tidak ada pengembara pada rentang level tersebut.");
+                        } else {
+                            System.out.println("Hasil pencarian:");
+                            for (User user : filtered) {
+                                System.out.println(user.toString());
+                                System.out.println();
+                            }
                         }
+                    } catch (NumberFormatException e){
+                        System.out.println("Input tidak valid: Input harus berupa angka.");
+                    } catch (IllegalArgumentException e){
+                        System.out.println("Input tidak valid: " + e.getMessage());
                     }
                 }
             
                 case "9" -> {
-                    System.out.print("""
-                            Urutkan daftar quest
-                            1. Berdasarkan tingkat kesulitan
-                            2. Berdasarkan reward
-                            X. Kembali ke menu utama
-                            Masukkan input: """);
-                    String sortInput = scanner.nextLine().strip();
+                    try {
+                        System.out.print("""
+                                Urutkan daftar quest
+                                1. Berdasarkan tingkat kesulitan
+                                2. Berdasarkan reward
+                                X. Kembali ke menu utama
+                                Masukkan input: """);
+                        String sortInput = scanner.nextLine().strip();
 
-                    if (!sortInput.equalsIgnoreCase("x")){
+                        if (!sortInput.equalsIgnoreCase("x")){
+                            if (!sortInput.equals("1") && !sortInput.equals("2")){
+                                throw new IllegalArgumentException("Masukkan input yang valid.");
+                            }
 
-                        System.out.print("Masukkan order urutan (asc/desc), masukkan x untuk kembali ke menu utama: ");
-                        String ascDesc = scanner.nextLine().strip();
-                        boolean asc = ascDesc.equalsIgnoreCase("asc");
+                            System.out.print("Masukkan order urutan (asc/desc), masukkan x untuk kembali ke menu utama: ");
+                            String ascDesc = scanner.nextLine().strip();
+                            if (!ascDesc.equalsIgnoreCase("asc") && !ascDesc.equalsIgnoreCase("desc")){
+                                throw new IllegalArgumentException("Input order tidak valid");
+                            }
 
-                        ArrayList<Quest> sortedQuests = new ArrayList<>();
-                        if (sortInput.equals("1")){
-                            sortedQuests = gm.sortQuestByDifficulty(asc);
-                        } else if (sortInput.equalsIgnoreCase("2")){
-                            sortedQuests = gm.sortQuestByReward(asc);
-                        }
+                            boolean asc = ascDesc.equalsIgnoreCase("asc");
 
-                        if (sortedQuests.isEmpty()){
-                            System.out.println("Belum ada quest yang terdaftar.");
-                        } else {
-                            System.out.println("Daftar quest terurut:");
-                            for (Quest quest : sortedQuests){
-                                System.out.println(quest.toString());
+                            ArrayList<Quest> sortedQuests = new ArrayList<>();
+                            if (sortInput.equals("1")){
+                                sortedQuests = gm.sortQuestByDifficulty(asc);
+                            } else if (sortInput.equalsIgnoreCase("2")){
+                                sortedQuests = gm.sortQuestByReward(asc);
+                            }
+
+                            if (sortedQuests.isEmpty()){
+                                System.out.println("Belum ada quest yang terdaftar.");
+                            } else {
+                                System.out.println("Daftar quest terurut:");
+                                for (Quest quest : sortedQuests){
+                                    System.out.println(quest.toString());
+                                }
                             }
                         }
+                    } catch (IllegalArgumentException e){
+                        System.out.println("Input tidak valid: " + e.getMessage());
                     }
                 }
             
                 case "10" -> {
-                    System.out.print("""
-                            Urutkan daftar pengembara
-                            1. Berdasarkan nama
-                            2. Berdasarkan level
-                            Masukkan pilihan: """);
-                    String sort10 = scanner.nextLine();
-                    
-                    System.out.print("Masukkan order urutan (asc/desc), masukkan x untuk kembali ke menu utama: ");
-                    String ascDesc10 = scanner.nextLine().strip();
-                    boolean isAsc10 = ascDesc10.equals("asc");
+                    try {
+                        System.out.print("""
+                                Urutkan daftar pengembara
+                                1. Berdasarkan nama
+                                2. Berdasarkan level
+                                Masukkan pilihan: """);
+                        String sort10 = scanner.nextLine();
 
-                    ArrayList<User> sorted10 = new ArrayList<>();
-                    if (sort10.equals("1")) {
-                        sorted10 = gm.sortWandererByName(isAsc10);
-                    } else if (sort10.equals("2")) {
-                        sorted10 = gm.sortWandererByLevel(isAsc10);
-                    }
-                    
-                    if (sorted10.isEmpty()) {
-                        System.out.println("Belum ada pengembara yang terdaftar.");
-                    } else {
-                        System.out.println("Daftar pengembara terurut:");
-                        for (User user : sorted10) {
-                            System.out.println(user.toString());
-                            System.out.println();
+                        if (!sort10.equals("1") && !sort10.equals("2")){
+                            throw new IllegalArgumentException("Masukkan input yang valid.");
                         }
+                        
+                        System.out.print("Masukkan order urutan (asc/desc), masukkan x untuk kembali ke menu utama: ");
+                        String ascDesc10 = scanner.nextLine().strip();
+                        if (!ascDesc10.equalsIgnoreCase("asc") && !ascDesc10.equalsIgnoreCase("desc")){
+                            throw new IllegalArgumentException("Input order urutan tidak valid.");
+                        }
+
+                        boolean isAsc10 = ascDesc10.equals("asc");
+
+                        ArrayList<User> sorted10 = new ArrayList<>();
+                        if (sort10.equals("1")) {
+                            sorted10 = gm.sortWandererByName(isAsc10);
+                        } else if (sort10.equals("2")) {
+                            sorted10 = gm.sortWandererByLevel(isAsc10);
+                        }
+                        
+                        if (sorted10.isEmpty()) {
+                            System.out.println("Belum ada pengembara yang terdaftar.");
+                        } else {
+                            System.out.println("Daftar pengembara terurut:");
+                            for (User user : sorted10) {
+                                System.out.println(user.toString());
+                                System.out.println();
+                            }
+                        }
+                    } catch (IllegalArgumentException e){
+                        System.out.println("Input tidak valid: " + e.getMessage());
                     }
                 }
             
@@ -387,76 +428,96 @@ public class Main {
                 }
             
                 case "3" -> {
-                    System.out.print("Masukkan tingkat kesulitan (mudah/menengah/sulit): ");
-                    String diffInputFilter = scanner.nextLine().strip();
-                    Difficulty diffFilter = Difficulty.fromString(diffInputFilter);
+                    try {
+                        System.out.print("Masukkan tingkat kesulitan (mudah/menengah/sulit): ");
+                        String diffInputFilter = scanner.nextLine().strip();
+                        Difficulty diffFilter = Difficulty.fromString(diffInputFilter);
 
-                    if (diffFilter == null){
-                        System.out.println("Tingkat kesuilitan tidak valid.");
-                    } else {
-                        ArrayList<Quest> filteredQuests = gm.filterQuestByDifficulty(diffFilter);
-                        if (filteredQuests.isEmpty()){
-                            System.out.println("Tidak ada quest dengan difficulty tersebut.");
+                        if (diffFilter == null){
+                            System.out.println("Tingkat kesuilitan tidak valid.");
                         } else {
-                            System.out.println("Hasil filter:");
-                            System.out.println();
-                            for (Quest quest : filteredQuests){
-                                System.out.println(quest.toString());
+                            ArrayList<Quest> filteredQuests = gm.filterQuestByDifficulty(diffFilter);
+                            if (filteredQuests.isEmpty()){
+                                System.out.println("Tidak ada quest dengan difficulty tersebut.");
+                            } else {
+                                System.out.println("Hasil filter:");
                                 System.out.println();
+                                for (Quest quest : filteredQuests){
+                                    System.out.println(quest.toString());
+                                    System.out.println();
+                                }
                             }
                         }
+                    } catch (IllegalArgumentException e){
+                        System.out.println("Input tidak valid: " + e.getMessage());
                     }
                 }
             
                 case "4" -> {
-                    System.out.print("""
-                            Urutkan daftar quest
-                            1. Berdasarkan tingkat kesulitan
-                            2. Berdasarkan reward
-                            X. Kembali ke menu utama
-                            Masukkan input: """);
-                    String sortInput = scanner.nextLine().strip();
+                    try {
+                        System.out.print("""
+                                Urutkan daftar quest
+                                1. Berdasarkan tingkat kesulitan
+                                2. Berdasarkan reward
+                                X. Kembali ke menu utama
+                                Masukkan input: """);
+                        String sortInput = scanner.nextLine().strip();
 
-                    if (!sortInput.equalsIgnoreCase("x")){
-                        System.out.print("Masukkan order urutan (asc/desc), masukkan x untuk kembali ke menu utama: ");
-                        String ascDesc = scanner.nextLine().strip();
-                        boolean asc = ascDesc.equalsIgnoreCase("asc");
+                        if (!sortInput.equalsIgnoreCase("x")){
+                            if (!sortInput.equals("1") && !sortInput.equals("2")){
+                                throw new IllegalArgumentException("Masukkan input yang valid.");
+                            }
 
-                        ArrayList<Quest> sortedQuests = new ArrayList<>();
-                        if (sortInput.equals("1")){
-                            sortedQuests = gm.sortQuestByReward(asc);
-                        } else if (sortInput.equalsIgnoreCase("2")){
-                            sortedQuests = gm.sortQuestByDifficulty(asc);
-                        }
+                            System.out.print("Masukkan order urutan (asc/desc), masukkan x untuk kembali ke menu utama: ");
+                            String ascDesc = scanner.nextLine().strip();
+                            if (!ascDesc.equalsIgnoreCase("asc") && !ascDesc.equalsIgnoreCase("desc")){
+                                throw new IllegalArgumentException("Input order tidak valid");
+                            }
 
-                        if (sortedQuests.isEmpty()){
-                            System.out.println("Belum ada quest yang terdaftar.");
-                        } else {
-                            System.out.println("Daftar quest terurut:");
-                            for (Quest quest : sortedQuests){
-                                System.out.println(quest.toString());
+                            boolean asc = ascDesc.equalsIgnoreCase("asc");
+
+                            ArrayList<Quest> sortedQuests = new ArrayList<>();
+                            if (sortInput.equals("1")){
+                                sortedQuests = gm.sortQuestByDifficulty(asc);
+                            } else if (sortInput.equalsIgnoreCase("2")){
+                                sortedQuests = gm.sortQuestByReward(asc);
+                            }
+
+                            if (sortedQuests.isEmpty()){
+                                System.out.println("Belum ada quest yang terdaftar.");
+                            } else {
+                                System.out.println("Daftar quest terurut:");
+                                for (Quest quest : sortedQuests){
+                                    System.out.println(quest.toString());
+                                }
                             }
                         }
+                    } catch (IllegalArgumentException e){
+                        System.out.println("Input tidak valid: " + e.getMessage());
                     }
                 }
             
                 case "5" -> {
-                    ArrayList<Quest> questList = gm.getQuests();
+                    try {
+                        ArrayList<Quest> questList = gm.getQuests();
 
-                    System.out.println("Masukkan ID Quest yang ingin diambil (atau 'X'/'x' untuk kembali: ");
-                    String idQuest = scanner.nextLine().strip();
+                        if (questList.isEmpty()){
+                            System.out.println("Belum ada quest yang terdaftar di sistem.");
+                        } else{
+                            System.out.println("Masukkan ID Quest yang ingin diambil (atau 'X'/'x' untuk kembali: ");
+                            String idQuest = scanner.nextLine().strip();
 
-                    if (questList.isEmpty()){
-                        System.out.println("Belum ada quest yang terdaftar di sistem.");
+                            if (!idQuest.equalsIgnoreCase("x")){
+                                Quest questTerpilih = gm.takeQuestValidation(wanderer, idQuest);
+
+                                BattleManager.simulateBattle(wanderer, questTerpilih);
+                            }                            
+                        }
+                    } catch (IllegalArgumentException | IllegalStateException e){
+                        System.out.println("Gagal mengambil quest: " + e.getMessage());
+                    } catch (InsufficientLevelException e){
+                        System.out.println(e.getMessage());
                     }
-
-                    Quest questTerpilih = gm.findQuestById(idQuest);
-                    // TODO validasi quest ada
-                    // TODO validasi quest tersedia
-                    // TODO validasi quest yang diambil sudah selesai atau belom
-                    // TODO validasi level minimum pengembara
-
-                    BattleManager.simulateBattle(wanderer, questTerpilih);
                 }
             
                 case "0" -> {

@@ -25,8 +25,28 @@ public class GameManager {
     }
 
     public void addWanderer(int idNumber, String name, String username,
-                    String password, double maxHp, double attack, double defense, String jobClass) {
+                    String password, double maxHp, double attack, double defense, String jobClass)
+                    throws DuplicateWandererException, IllegalArgumentException {
+        
+        if (isUsernameTaken(username)){
+            throw new DuplicateWandererException("Username sudah digunakan.");
+        }
+        
+        if (maxHp <= 0){
+            throw new IllegalArgumentException("HP maksimal harus bilangan positif");
+        }
+
+        if (attack <= 0){
+            throw new IllegalArgumentException("Attack harus bilangan positif.");
+        }
+
+        if (defense <= 0) {
+            throw new IllegalArgumentException("Defense harus bilangan positif.");
+        }
+
+
         Wanderer wanderer = switch (jobClass) {
+            case "1" -> new Wanderer(nextWandererId(), name, username, password, maxHp, attack, defense);
             case "2" -> new Tank(nextWandererId(), name, username, password, maxHp, attack, defense);
             case "3" -> new Mage(nextWandererId(), name, username, password, maxHp, attack, defense);
             case "4" -> new Assassin(nextWandererId(), name, username, password, maxHp, attack, defense);
@@ -34,7 +54,7 @@ public class GameManager {
             case "6" -> new Support(nextWandererId(), name, username, password, maxHp, attack, defense);
 
         
-            default -> new Wanderer(nextWandererId(), name, username, password, maxHp, attack, defense);
+            default -> throw new IllegalArgumentException("Input job class tidak valid.");
         };
         this.users.add(wanderer);
     }
@@ -67,7 +87,23 @@ public class GameManager {
         return count;
     }
 
-    public void addMonster(Monster monster) {
+    public void addMonster(Monster monster) throws IllegalArgumentException{
+        if (isMosterNameTaken(monster.getName())){
+            throw new IllegalArgumentException("Nama monster sudah digunakan.");
+        }
+
+        if (monster.getMaxHp() <= 0){
+            throw new IllegalArgumentException("HP maksimal harus bilangan positif.");
+        }
+
+        if (monster.getAttackPower() <= 0){
+            throw new IllegalArgumentException("Attak harus bilangan positif.");
+        }
+
+        if (monster.getDefense() <= 0){
+            throw new IllegalArgumentException("Defense harus bilangan positif.");
+        }
+
         this.monsters.add(monster);
     }
 
@@ -79,37 +115,64 @@ public class GameManager {
         this.quests.add(quest);
     }
 
-    public void addQuest(int questType, String name, String description, Difficulty difficulty, Monster monster, int minLevel, int bonusExp, int bonusCoin){
+    public void addQuest(int questType, String name, String description, Difficulty difficulty, Monster monster, int minLevel, int bonusExp, int bonusCoin) throws IllegalArgumentException{
         int questId = nextQuestId();
 
-        if (questType == 1){
-            addQuest(new RegularQuest(questId, name, description, difficulty, monster, minLevel));
-        } else if (questType == 2){
-            addQuest(new DailyQuest(questId, name, description, difficulty, monster, minLevel));
-        } else if (questType == 3){
-            addQuest(new BountyQuest(questId, name, description, difficulty, monster, minLevel, bonusExp, bonusCoin));
+        if (difficulty == null){
+            throw new IllegalArgumentException("Input difficulty tidak valid");
         }
+
+        switch (questType) {
+            case 1 -> addQuest(new RegularQuest(questId, name, description, difficulty, monster, minLevel));
+            case 2 -> addQuest(new DailyQuest(questId, name, description, difficulty, monster, minLevel));
+            case 3 -> addQuest(new BountyQuest(questId, name, description, difficulty, monster, minLevel, bonusExp, bonusCoin));
+
+            default -> throw new IllegalArgumentException("Input tipe quest tidak valid.");
+        };
     }
 
     public int nextQuestId() {
         return this.quests.size()+1;
     }
 
-    public Quest findQuestById(String id) {
+    public Quest findQuestById(String id) throws IllegalArgumentException{
         for (Quest quest : this.quests){
             if (quest.getId().equalsIgnoreCase(id.strip())){
                 return quest;
             }
         }
-        return null;
+        throw new IllegalArgumentException("Quest tidak ditemukan di sistem.");
     }
 
-    public Monster findMonsterById(String id) {
-        // TODO
-        return null;
+    public Quest takeQuestValidation(Wanderer wanderer, String idQuest) throws IllegalArgumentException, IllegalStateException, InsufficientLevelException {
+        Quest quest = findQuestById(idQuest);
+        
+        if (quest.getStatus() != QuestStatus.TERSEDIA){
+            throw new IllegalStateException("Quest tidak tersedia atau sudah selesai.");
+        }
+
+        if (wanderer.getLevel() < quest.getDifficulty().getMinWandererLevel()){
+            throw new InsufficientLevelException("Level pengembara tidak cukup.");
+        }
+
+        return quest;
     }
 
-    public ArrayList<Quest> filterQuestByDifficulty(Difficulty difficulty) {
+    public Monster findMonsterById(String id) throws IllegalArgumentException{
+        for (Monster monster : this.monsters){
+            if (String.valueOf(monster.getMonsterId()).equalsIgnoreCase(id.strip())){
+                return monster;
+            }
+        }
+
+        throw new IllegalArgumentException("Nomor monster tidak valid." );
+    }
+
+    public ArrayList<Quest> filterQuestByDifficulty(Difficulty difficulty) throws IllegalArgumentException{
+        if (difficulty == null){
+            throw new IllegalArgumentException("Input difficulty tidak valid.");
+        }
+        
         ArrayList<Quest> filtered = new ArrayList<>();
         for (Quest q : this.quests) {
             if (q.getDifficulty() == difficulty) {
@@ -119,7 +182,11 @@ public class GameManager {
         return filtered;
     }
 
-    public ArrayList<User> filterWandererByLevel(int min, int max) {
+    public ArrayList<User> filterWandererByLevel(int min, int max) throws IllegalArgumentException {
+        if (min < 0 || max < min){
+            throw new IllegalArgumentException("Range level tidak valid.");
+        }
+        
         ArrayList<User> filtered = new ArrayList<>();
         for (User user : getWanderers()) {
             Wanderer w = (Wanderer) user;
