@@ -309,25 +309,30 @@ public class Main {
 
                             System.out.print("Masukkan order urutan (asc/desc), masukkan x untuk kembali ke menu utama: ");
                             String ascDesc = scanner.nextLine().strip();
-                            if (!ascDesc.equalsIgnoreCase("asc") && !ascDesc.equalsIgnoreCase("desc")){
+
+
+                            if (ascDesc.equalsIgnoreCase("x")){
+
+                            } else if (!ascDesc.equalsIgnoreCase("asc") && !ascDesc.equalsIgnoreCase("desc")){
                                 throw new IllegalArgumentException("Input order tidak valid");
-                            }
-
-                            boolean asc = ascDesc.equalsIgnoreCase("asc");
-
-                            ArrayList<Quest> sortedQuests = new ArrayList<>();
-                            if (sortInput.equals("1")){
-                                sortedQuests = gm.sortQuestByDifficulty(asc);
-                            } else if (sortInput.equalsIgnoreCase("2")){
-                                sortedQuests = gm.sortQuestByReward(asc);
-                            }
-
-                            if (sortedQuests.isEmpty()){
-                                System.out.println("Belum ada quest yang terdaftar.");
                             } else {
-                                System.out.println("Daftar quest terurut:");
-                                for (Quest quest : sortedQuests){
-                                    System.out.println(quest.toString());
+
+                                boolean asc = ascDesc.equalsIgnoreCase("asc");
+
+                                ArrayList<Quest> sortedQuests = new ArrayList<>();
+                                if (sortInput.equals("1")){
+                                    sortedQuests = gm.sortQuestByDifficulty(asc);
+                                } else if (sortInput.equalsIgnoreCase("2")){
+                                    sortedQuests = gm.sortQuestByReward(asc);
+                                }
+
+                                if (sortedQuests.isEmpty()){
+                                    System.out.println("Belum ada quest yang terdaftar.");
+                                } else {
+                                    System.out.println("Daftar quest terurut:");
+                                    for (Quest quest : sortedQuests){
+                                        System.out.println(quest.toString());
+                                    }
                                 }
                             }
                         }
@@ -345,33 +350,37 @@ public class Main {
                                 Masukkan pilihan: """);
                         String sort10 = scanner.nextLine();
 
-                        if (!sort10.equals("1") && !sort10.equals("2")){
+                        if (sort10.equalsIgnoreCase("x")){
+
+                        } else if (!sort10.equals("1") && !sort10.equals("2")){
                             throw new IllegalArgumentException("Masukkan input yang valid.");
-                        }
-                        
-                        System.out.print("Masukkan order urutan (asc/desc), masukkan x untuk kembali ke menu utama: ");
-                        String ascDesc10 = scanner.nextLine().strip();
-                        if (!ascDesc10.equalsIgnoreCase("asc") && !ascDesc10.equalsIgnoreCase("desc")){
-                            throw new IllegalArgumentException("Input order urutan tidak valid.");
-                        }
+                        } else{
+                            System.out.print("Masukkan order urutan (asc/desc), masukkan x untuk kembali ke menu utama: ");
+                            String ascDesc10 = scanner.nextLine().strip();
+                            if (ascDesc10.equalsIgnoreCase("x")){
 
-                        boolean isAsc10 = ascDesc10.equals("asc");
+                            } else if (!ascDesc10.equalsIgnoreCase("asc") && !ascDesc10.equalsIgnoreCase("desc")){
+                                throw new IllegalArgumentException("Input order urutan tidak valid.");
+                            } else {
+                                boolean isAsc10 = ascDesc10.equals("asc");
 
-                        ArrayList<User> sorted10 = new ArrayList<>();
-                        if (sort10.equals("1")) {
-                            sorted10 = gm.sortWandererByName(isAsc10);
-                        } else if (sort10.equals("2")) {
-                            sorted10 = gm.sortWandererByLevel(isAsc10);
-                        }
-                        
-                        if (sorted10.isEmpty()) {
-                            System.out.println("Belum ada pengembara yang terdaftar.");
-                        } else {
-                            System.out.println("Daftar pengembara terurut:");
-                            for (User user : sorted10) {
-                                System.out.println(user.toString());
-                                System.out.println();
-                            }
+                                ArrayList<User> sorted10 = new ArrayList<>();
+                                if (sort10.equals("1")) {
+                                    sorted10 = gm.sortWandererByName(isAsc10);
+                                } else if (sort10.equals("2")) {
+                                    sorted10 = gm.sortWandererByLevel(isAsc10);
+                                }
+                                
+                                if (sorted10.isEmpty()) {
+                                    System.out.println("Belum ada pengembara yang terdaftar.");
+                                } else {
+                                    System.out.println("Daftar pengembara terurut:");
+                                    for (User user : sorted10) {
+                                        System.out.println(user.toString());
+                                        System.out.println();
+                                    }
+                                }
+                            }  
                         }
                     } catch (IllegalArgumentException e){
                         System.out.println("Input tidak valid: " + e.getMessage());
@@ -470,25 +479,30 @@ public class Main {
 
                             System.out.print("Masukkan order urutan (asc/desc), masukkan x untuk kembali ke menu utama: ");
                             String ascDesc = scanner.nextLine().strip();
-                            if (!ascDesc.equalsIgnoreCase("asc") && !ascDesc.equalsIgnoreCase("desc")){
+
+
+                            if (ascDesc.equalsIgnoreCase("x")){
+
+                            } else if (!ascDesc.equalsIgnoreCase("asc") && !ascDesc.equalsIgnoreCase("desc")){
                                 throw new IllegalArgumentException("Input order tidak valid");
-                            }
-
-                            boolean asc = ascDesc.equalsIgnoreCase("asc");
-
-                            ArrayList<Quest> sortedQuests = new ArrayList<>();
-                            if (sortInput.equals("1")){
-                                sortedQuests = gm.sortQuestByDifficulty(asc);
-                            } else if (sortInput.equalsIgnoreCase("2")){
-                                sortedQuests = gm.sortQuestByReward(asc);
-                            }
-
-                            if (sortedQuests.isEmpty()){
-                                System.out.println("Belum ada quest yang terdaftar.");
                             } else {
-                                System.out.println("Daftar quest terurut:");
-                                for (Quest quest : sortedQuests){
-                                    System.out.println(quest.toString());
+
+                                boolean asc = ascDesc.equalsIgnoreCase("asc");
+
+                                ArrayList<Quest> sortedQuests = new ArrayList<>();
+                                if (sortInput.equals("1")){
+                                    sortedQuests = gm.sortQuestByDifficulty(asc);
+                                } else if (sortInput.equalsIgnoreCase("2")){
+                                    sortedQuests = gm.sortQuestByReward(asc);
+                                }
+
+                                if (sortedQuests.isEmpty()){
+                                    System.out.println("Belum ada quest yang terdaftar.");
+                                } else {
+                                    System.out.println("Daftar quest terurut:");
+                                    for (Quest quest : sortedQuests){
+                                        System.out.println(quest.toString());
+                                    }
                                 }
                             }
                         }
